@@ -19,12 +19,15 @@ class Tokenizer {
 		self.iterator = self.json.characters.makeIterator()
 	}
 	
+	/// Decodes the next available construct as a Token, if possible. Returns
+	/// nil if the end of the string has been reached, and throws if something
+	/// is malformed.
 	func next() throws -> Token? {
 		if done {
 			return nil
 		}
-		var temp: Character? = nil
-		while let c = temp ?? iterator.next() {
+		var previouslyUnconsumed: Character? = nil
+		while let c = previouslyUnconsumed ?? iterator.next() {
 			switch c {
 			case " ", "\t", "\r", "\n":
 				// Just eat whitespace.
@@ -85,7 +88,7 @@ class Tokenizer {
 				guard hasPriorSeparator, let result = parseNumber(startsWith: c) else {
 					throw JSONError.Malformed
 				}
-				temp = result.nextCharacter
+				previouslyUnconsumed = result.nextCharacter
 				hasPriorSeparator = false
 				return .Number(result.number)
 			default:  // Unexpected character.
@@ -181,7 +184,7 @@ class Tokenizer {
 				return Tokenizer.validateNumber(result) ? (result, c) : nil
 			}
 		}
-		// We've consumed the entire string, check if it's a number.
+		// We've consumed the entire string, check that it's a number.
 		return Tokenizer.validateNumber(result) ? (result, nil) : nil
 	}
 
@@ -191,7 +194,7 @@ class Tokenizer {
 		/// This enum tracks the last character we consumed.
 		enum State {
 			/// We haven't consumed anything yet.
-			case NumberBegin
+			case IntegerBegin
 			/// We've consumed the leading sign.
 			case IntegerSign
 			/// We've consumed a zero in the integer part.
@@ -210,11 +213,11 @@ class Tokenizer {
 			case ExponentDigits
 		}
 
-		var state = State.NumberBegin
+		var state = State.IntegerBegin
 		var iter = number.characters.makeIterator()
 		while let c = iter.next() {
 			switch state {
-			case .NumberBegin:
+			case .IntegerBegin:
 				// We can have a negative sign, a 0, or a digit 1-9.
 				switch c {
 				case "-":
