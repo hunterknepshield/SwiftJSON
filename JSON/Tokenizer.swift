@@ -13,6 +13,8 @@ class Tokenizer {
 	private(set) var done = false
 	/// Used to find malformed JSON missing delimiters between tokens.
 	private var hasPriorSeparator = true
+	/// Used to store state when a character was consumed eagerly and ended up unsed.
+	private var previouslyUnconsumed: Character? = nil
 
 	init(json: String) {
 		self.json = json
@@ -26,8 +28,8 @@ class Tokenizer {
 		if done {
 			return nil
 		}
-		var previouslyUnconsumed: Character? = nil
 		while let c = previouslyUnconsumed ?? iterator.next() {
+			previouslyUnconsumed = nil
 			switch c {
 			case " ", "\t", "\r", "\n":
 				// Just eat whitespace.

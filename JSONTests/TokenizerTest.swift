@@ -13,15 +13,15 @@ class TokenizerTest: XCTestCase {
 	func tokenizerHelper(_ json: String, _ tokens: [Token]) {
 		let tokenizer = Tokenizer(json: json)
 		do {
-			for token in tokens {
-				guard let gotten = try tokenizer.next() else {
-					XCTFail("Failed to tokenize \(json)")
+			for expected in tokens {
+				guard let actual = try tokenizer.next() else {
+					XCTFail("Failed to produce more tokens while attempting to tokenize \(json)")
 					return
 				}
-				XCTAssertEqual(token, gotten)
+				XCTAssertEqual(expected, actual)
 			}
 		} catch {
-			XCTFail("Failed to tokenize \(json)"	)
+			XCTFail("Error thrown while attempting to tokenize \(json)"	)
 		}
 	}
 	
@@ -60,5 +60,12 @@ class TokenizerTest: XCTestCase {
 		numberHelper("123E456")
 		numberHelper("123.456E789")
 		numberHelper("-1")
+	}
+	
+	func testMultipleTokenization() {
+		tokenizerHelper("{123", [.OpenObject, .Number("123")])
+		tokenizerHelper("123}", [.Number("123"), .CloseObject])
+		tokenizerHelper("{123}", [.OpenObject, .Number("123"), .CloseObject])
+		tokenizerHelper("[null", [.OpenArray, .Null])
 	}
 }
