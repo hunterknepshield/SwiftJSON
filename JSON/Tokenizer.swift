@@ -204,84 +204,126 @@ class Tokenizer {
 		return result
 	}
 
+	/// This function returns whether or not the supplied string represents a
+	/// valid JSON number.
 	static func validateNumber(_ number: String) -> Bool {
-		guard number.characters.count != 0 else {
-			return false
+		/// This enum tracks the last character we consumed.
+		enum State {
+			/// We haven't consumed anything yet.
+			case NumberBegin
+			/// We've consumed the leading sign.
+			case IntegerSign
+			/// We've consumed a zero in the integer part.
+			case IntegerZero
+			/// We're consuming any digits in the integer part.
+			case IntegerDigits
+			/// We've consumed the decimal point.
+			case FractionBegin
+			/// We're consuming any digits in the fraction part.
+			case FractionDigits
+			/// We've consumed the exponent delimiter.
+			case ExponentBegin
+			/// We've consumed the exponent's sign.
+			case ExponentSign
+			/// We're consuming any digits in the exponent part.
+			case ExponentDigits
 		}
-		var hasLeadingZero = false
-		var doneInteger = false
-		var doneFraction = false
-		var fractionHasDigits = false
-		var exponentSignMayExist = true
-		var exponentHasDigits = false
-		switch number.characters.first! {
-		case "-", "1", "2", "3", "4", "5", "6", "7", "8", "9":
-			// Normal case.
-			break
-		case "0":
-			hasLeadingZero = true
-		default:
-			return false
-		}
-		for char in number.characters {
-			if !doneInteger {
-				switch char {
+
+		var state = State.NumberBegin
+		var iter = number.characters.makeIterator()
+		while let c = iter.next() {
+			switch state {
+			case .NumberBegin:
+				// We can have a negative sign, a 0, or a digit 1-9.
+				switch c {
+				case "-":
+					state = .IntegerSign
 				case "0":
-					if hasLeadingZero {
-						// Already had a zero - bad.
-						return false
-					}
-					hasLeadingZero = true
+					state = .IntegerZero
 				case "1", "2", "3", "4", "5", "6", "7", "8", "9":
-					if hasLeadingZero {
-						// We had a leading zero - bad.
-						return false
-					}
-					hasLeadingZero = false
-				case ".":
-					// Begin the fraction. We might still have an exponent.
-					doneInteger = true
-				case "E", "e":
-					// Begin the exponent. We can't have a fraction any more.
-					doneInteger = true
-					doneFraction = true
+					state = .IntegerDigits
 				default:
 					return false
 				}
-			} else if !doneFraction {
-				// Fraction is optional.
-				switch char {
+			case .IntegerSign:
+				// We can have a 0 or a digit 1-9.
+				switch c {
+				case "0":
+					state = .IntegerZero
+				case "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					state = .IntegerDigits
+				default:
+					return false
+				}
+			case .IntegerZero:
+				// We can only have a decimal point or exponent now.
+				switch c {
+				case ".":
+					state = .FractionBegin
+				case "E", "e":
+					state = .ExponentBegin
+				default:
+					return false
+				}
+			case .IntegerDigits:
+				// We can have any digit 0-9, a decimal point, or exponent.
+				switch c {
 				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
-					// Normal case.
-					fractionHasDigits = true
+					break
+				case ".":
+					state = .FractionBegin
+				case "E", "e":
+					state = .ExponentBegin
+				default:
+					return false
+				}
+			case .FractionBegin:
+				// We need at least one digit.
+				switch c {
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					state = .FractionDigits
+				default:
+					return false
+				}
+			case .FractionDigits:
+				// We can have more digits or an exponent.
+				switch c {
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
 					break
 				case "E", "e":
-					// Begin the exponent.
-					if !fractionHasDigits {
-						return false
-					}
-					doneFraction = true
+					state = .ExponentBegin
 				default:
 					return false
 				}
-			} else {
-				// Must be the exponent.
-				switch char {
-				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
-					exponentSignMayExist = false
-					exponentHasDigits = true
+			case .ExponentBegin:
+				// We can have a sign or digits.
+				switch c {
 				case "+", "-":
-					// Too many or misplaced exponent sign.
-					if !exponentSignMayExist || exponentHasDigits {
-						return false
-					}
-					exponentSignMayExist = false
+					state = .ExponentSign
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					state = .ExponentDigits
+				default:
+					return false
+				}
+			case .ExponentSign:
+				// We need at least one digit.
+				switch c {
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					state = .ExponentDigits
+				default:
+					return false
+				}
+			case .ExponentDigits:
+				switch c {
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					break
 				default:
 					return false
 				}
 			}
 		}
-		return true
+		// These are the valid termination states.
+		return [State.IntegerZero, .IntegerDigits, .FractionDigits, .ExponentDigits].contains(state)
 	}
 
 }
