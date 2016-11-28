@@ -17,6 +17,7 @@
 		5A0E54611DECCCD5003E2E42 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54601DECCCD5003E2E42 /* JSON.swift */; };
 		5A0E54631DECD513003E2E42 /* BuilderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54621DECD513003E2E42 /* BuilderTest.swift */; };
 		5A0E54651DECDD98003E2E42 /* TokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54641DECDD98003E2E42 /* TokenizerTest.swift */; };
+		5A0E54691DECF773003E2E42 /* CustomStringConvertibleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		5A0E54601DECCCD5003E2E42 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		5A0E54621DECD513003E2E42 /* BuilderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuilderTest.swift; sourceTree = "<group>"; };
 		5A0E54641DECDD98003E2E42 /* TokenizerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenizerTest.swift; sourceTree = "<group>"; };
+		5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomStringConvertibleTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				5A0E54621DECD513003E2E42 /* BuilderTest.swift */,
 				5A0E54531DECAF0D003E2E42 /* NumberParsingTest.swift */,
 				5A0E54641DECDD98003E2E42 /* TokenizerTest.swift */,
+				5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */,
 			);
 			path = JSONTests;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A0E54541DECAF0D003E2E42 /* NumberParsingTest.swift in Sources */,
+				5A0E54691DECF773003E2E42 /* CustomStringConvertibleTest.swift in Sources */,
 				5A0E54631DECD513003E2E42 /* BuilderTest.swift in Sources */,
 				5A0E54651DECDD98003E2E42 /* TokenizerTest.swift in Sources */,
 			);

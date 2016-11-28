@@ -14,8 +14,6 @@ public struct JSON {
 		case Array(elements: [Value])
 		case Boolean(Bool)
 		case Null
-		
-		// TODO: CustomStringConvertible conformance
 	}
 	
 	var value: Value
@@ -76,6 +74,8 @@ public struct JSON {
 	}
 }
 
+// MARK: Equatable
+
 extension JSON.Value: Equatable {
 	static func ==(lhs: JSON.Value, rhs: JSON.Value) -> Bool {
 		return false
@@ -116,6 +116,69 @@ extension JSON: Equatable {
 			return true
 		default:
 			return false
+		}
+	}
+}
+
+// MARK: CustomStringConvertible
+
+extension JSON.Value: CustomStringConvertible {
+	func description(_ indent: String = "") -> String {
+		let result: String
+		switch self {
+		case .String(let str):
+			result = "\"\(str)\""
+		case .Number(let str):
+			result = str
+		case .Object(let members):
+			let newIndent = indent + "    "
+			var str = "{"
+			let strings = members.map({ return newIndent + "\"\($0.key)\" : \($0.value.description(newIndent)),\n" })
+			if strings.count > 0 {
+				str.append("\n")
+				for string in strings.dropLast() {
+					str.append(string)
+				}
+				// Need to remove that last comma/newline and have just a newline.
+				let last = strings.last!
+				str.append(Swift.String(last.characters.dropLast(2)))
+				str.append("\n" + indent)
+			}
+			str.append("}")
+			result = str
+		case .Array(let elements):
+			var str = "["
+			let strings = elements.map({ return $0.description(indent) })
+			var first = true
+			for string in strings {
+				if first {
+					first = false
+				} else {
+					str.append(", ")
+				}
+				str.append(string)
+			}
+			str.append("]")
+			result = str
+		case .Boolean(let b):
+			result = b ? "true" : "false"
+		case .Null:
+			result = "null"
+		}
+		return indent + result
+	}
+	
+	var description: String {
+		get {
+			return self.description()
+		}
+	}
+}
+
+extension JSON: CustomStringConvertible {
+	public var description: String {
+		get {
+			return self.value.description
 		}
 	}
 }
