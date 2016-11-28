@@ -12,10 +12,7 @@ import XCTest
 class NumberParsingTest: XCTestCase {
 	func testNumberValidation() {
 		for i in 0...1000 {
-			let token = Token.Null  // Fine
-			let error = JSONError.Malformed  // Fine
-			// let t = Tokenizer(json: "test")  // Unresolved - wat
-			// XCTAssert(Tokenizer.validateNumber("\(i)"))
+			XCTAssert(Tokenizer.validateNumber("\(i)"))
 		}
 	}
 }
