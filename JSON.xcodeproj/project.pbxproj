@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		5A0E543D1DECA619003E2E42 /* JSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0E54331DECA619003E2E42 /* JSON.framework */; };
-		5A0E54421DECA619003E2E42 /* JSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54411DECA619003E2E42 /* JSONTests.swift */; };
 		5A0E544E1DECA66F003E2E42 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E544D1DECA66F003E2E42 /* Token.swift */; };
 		5A0E54501DECA679003E2E42 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E544F1DECA679003E2E42 /* Tokenizer.swift */; };
 		5A0E54521DECA6B1003E2E42 /* JSONError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54511DECA6B1003E2E42 /* JSONError.swift */; };
+		5A0E54541DECAF0D003E2E42 /* NumberParsingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54531DECAF0D003E2E42 /* NumberParsingTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,11 +28,11 @@
 		5A0E54331DECA619003E2E42 /* JSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0E54371DECA619003E2E42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5A0E543C1DECA619003E2E42 /* JSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A0E54411DECA619003E2E42 /* JSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTests.swift; sourceTree = "<group>"; };
 		5A0E54431DECA619003E2E42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5A0E544D1DECA66F003E2E42 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		5A0E544F1DECA679003E2E42 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		5A0E54511DECA6B1003E2E42 /* JSONError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONError.swift; sourceTree = "<group>"; };
+		5A0E54531DECAF0D003E2E42 /* NumberParsingTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberParsingTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,7 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				5A0E54431DECA619003E2E42 /* Info.plist */,
-				5A0E54411DECA619003E2E42 /* JSONTests.swift */,
+				5A0E54531DECAF0D003E2E42 /* NumberParsingTest.swift */,
 			);
 			path = JSONTests;
 			sourceTree = "<group>";
@@ -212,7 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A0E54421DECA619003E2E42 /* JSONTests.swift in Sources */,
+				5A0E54541DECAF0D003E2E42 /* NumberParsingTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
