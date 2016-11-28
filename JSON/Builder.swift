@@ -120,42 +120,6 @@ class Builder {
 		var state = State.NeedValueOrClose
 		var elements = [JSON]()
 		do {
-//			while true {
-//				switch state {
-//				case .NeedValueOrClose:
-//					guard let token = try tokenizer.next() else {
-//						return nil
-//					}
-//					switch token {
-//					case .CloseArray:
-//						return JSON(.Array(elements: elements))
-//					default:
-//						guard let value = buildValue(startingWith: token) else {
-//							return nil
-//						}
-//						elements.append(value)
-//						state = .NeedCommaOrClose
-//					}
-//				case .NeedValue:
-//					guard let value = buildValue() else {
-//						return nil
-//					}
-//					elements.append(value)
-//					state = .NeedCommaOrClose
-//				case .NeedCommaOrClose:
-//					guard let token = try tokenizer.next() else {
-//						return nil
-//					}
-//					switch token {
-//					case .Comma:
-//						state = .NeedValue
-//					case .CloseArray:
-//						return JSON(.Array(elements: elements))
-//					default:
-//						return nil
-//					}
-//				}
-//			}
 			while let token = try tokenizer.next() {
 				switch state {
 				case .NeedValueOrClose:
