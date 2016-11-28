@@ -46,7 +46,35 @@ class Tokenizer {
 			case "]":
 				hasPriorSeparator = true
 				return .CloseArray
-			// TODO: null/true/false literals, strings, numbers
+			case "n":  // Literal null.
+				guard hasPriorSeparator,
+					let u = iterator.next(), u == "u",
+					let l1 = iterator.next(), l1 == "l",
+					let l2 = iterator.next(), l2 == "l" else {
+						throw JSONError.Malformed
+				}
+				hasPriorSeparator = false
+				return .Null
+			case "t":  // Literal true.
+				guard hasPriorSeparator,
+					let r = iterator.next(), r == "r",
+					let u = iterator.next(), u == "u",
+					let e = iterator.next(), e == "e" else {
+						throw JSONError.Malformed
+				}
+				hasPriorSeparator = false
+				return .Boolean(true)
+			case "f":  // Literal false.
+				guard hasPriorSeparator,
+					let a = iterator.next(), a == "a",
+					let l = iterator.next(), l == "l",
+					let s = iterator.next(), s == "s",
+					let e = iterator.next(), e == "e" else {
+						throw JSONError.Malformed
+				}
+				hasPriorSeparator = false
+				return .Boolean(false)
+			// TODO: strings, numbers
 			default:  // Unexpected character.
 				throw JSONError.Malformed
 			}
