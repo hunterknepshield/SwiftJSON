@@ -80,7 +80,13 @@ class Tokenizer {
 				}
 				hasPriorSeparator = false
 				return .String(string)
-			// TODO: numbers
+			case "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":  // Literal number.
+				guard hasPriorSeparator, let result = parseNumber(startsWith: c) else {
+					throw JSONError.Malformed
+				}
+				hasPriorSeparator = false
+				// TODO: need a fix, we consume one too many characters in parseNumber.
+				return .Number(result)
 			default:  // Unexpected character.
 				throw JSONError.Malformed
 			}
@@ -159,4 +165,43 @@ class Tokenizer {
 		default:			return nil
 		}
 	}
+	
+	private func parseNumber(startsWith beginning: Character) -> String? {
+		var result = String(beginning)
+		// We need at least one digit before a decimal point or exponent.
+		var needsDigit = beginning == "-"
+		var tempStorage: Character? = nil
+		while let c = tempStorage ?? iterator.next() {
+			tempStorage = nil
+			switch c {
+			case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+				needsDigit = false
+				result.append(c)
+			case ".":  // Beginning of optional fraction.
+				if needsDigit {
+					return nil
+				}
+				needsDigit = true
+				result.append(c)
+			case "E", "e":  // Beginning of optional exponent.
+				if needsDigit {
+					return nil
+				}
+				needsDigit = true
+				result.append(c)
+			case "+", "-":  // Optional signs after exponent's E.
+				needsDigit = true
+				result.append(c)
+			default:  // Non-numeric character, we're done making the number.
+				if needsDigit {
+					// Improperly terminated number, e.g. "123.".
+					return nil
+				}
+				return result
+			}
+		}
+		// We've run out of string to consume.
+		return result
+	}
+
 }
