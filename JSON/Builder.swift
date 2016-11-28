@@ -14,10 +14,13 @@ class Builder {
 	}
 	
 	func build() -> JSON? {
-		return buildValue()
+		guard let value = buildValue() else {
+			return nil
+		}
+		return JSON(value)
 	}
 	
-	func buildValue() -> JSON? {
+	func buildValue() -> JSON.Value? {
 		// We can have a top-level number/string/literal, an object, or an array.
 		do {
 			let maybeToken = try tokenizer.next()
@@ -30,27 +33,27 @@ class Builder {
 		}
 	}
 	
-	func buildValue(startingWith initial: Token) -> JSON? {
+	func buildValue(startingWith initial: Token) -> JSON.Value? {
 		switch initial {
 		case .OpenObject:
 			return buildObject()
 		case .OpenArray:
 			return buildArray()
 		case .Null:
-			return JSON(.Null)
+			return .Null
 		case .Boolean(let bool):
-			return JSON(.Boolean(bool))
+			return .Boolean(bool)
 		case .String(let str):
-			return JSON(.String(str))
+			return .String(str)
 		case .Number(let str):
-			return JSON(.Number(str))
+			return .Number(str)
 		case .CloseObject, .CloseArray, .Colon, .Comma:  // Can't have these here.
 			return nil
 		}
 	}
 	
-	/// Assumes the first .OpenObject Token has been consumed.
-	func buildObject() -> JSON? {
+	/// Assumes the initial .OpenObject Token has been consumed.
+	func buildObject() -> JSON.Value? {
 		enum State {
 			/// We need a key or a CloseObject token.
 			case NeedKeyOrClose
@@ -64,16 +67,15 @@ class Builder {
 			case NeedCommaOrClose
 		}
 		
-		// We now want a list of comma-separated (String: Value) pairs or a CloseObject token.
 		var state = State.NeedKeyOrClose
-		var members = [String: JSON]()
+		var members: [String : JSON.Value] = [:]
 		do {
 			while let token = try tokenizer.next() {
 				switch state {
 				case .NeedKeyOrClose:
 					switch token {
 					case .CloseObject:
-						return JSON(.Object(members: members))
+						return .Object(members: members)
 					default:
 						break
 					}
@@ -103,7 +105,7 @@ class Builder {
 					case .Comma:
 						state = .NeedKey
 					case .CloseObject:
-						return JSON(.Object(members: members))
+						return .Object(members: members)
 					default:
 						return nil
 					}
@@ -116,8 +118,8 @@ class Builder {
 		}
 	}
 	
-	/// Assumes the first .OpenArray Token has been consumed.
-	func buildArray() -> JSON? {
+	/// Assumes the initial .OpenArray Token has been consumed.
+	func buildArray() -> JSON.Value? {
 		enum State {
 			/// We need a value or a CloseArray token.
 			case NeedValueOrClose
@@ -128,14 +130,14 @@ class Builder {
 		}
 		
 		var state = State.NeedValueOrClose
-		var elements = [JSON]()
+		var elements: [JSON.Value] = []
 		do {
 			while let token = try tokenizer.next() {
 				switch state {
 				case .NeedValueOrClose:
 					switch token {
 					case .CloseArray:
-						return JSON(.Array(elements: elements))
+						return .Array(elements: elements)
 					default:
 						break
 					}
@@ -151,7 +153,7 @@ class Builder {
 					case .Comma:
 						state = .NeedValue
 					case .CloseArray:
-						return JSON(.Array(elements: elements))
+						return .Array(elements: elements)
 					default:
 						return nil
 					}

@@ -7,22 +7,24 @@
 //
 
 public struct JSON {
-	enum JSONValue {
+	enum Value {
 		case String(Swift.String)
 		case Number(Swift.String)
-		case Object(members: [Swift.String: JSON])
-		case Array(elements: [JSON])
+		case Object(members: [Swift.String: Value])
+		case Array(elements: [Value])
 		case Boolean(Bool)
 		case Null
+		
+		// TODO: CustomStringConvertible conformance
 	}
 	
-	var value: JSONValue
+	var value: Value
 	
 	public var array: [JSON]? {
 		get {
 			switch self.value {
 			case .Array(let arr):
-				return arr
+				return arr.map({ return JSON($0) })
 			default:
 				return nil
 			}
@@ -48,8 +50,19 @@ public struct JSON {
 			}
 		}
 	}
+	public var isNull: Bool {
+		get {
+			switch self.value {
+			case .Null:
+				return true
+			default:
+				return false
+			}
+		}
+	}
 	
-	init(_ value: JSONValue) {
+	/// Used internally by Builder.
+	init(_ value: Value) {
 		self.value = value
 	}
 	
@@ -60,6 +73,12 @@ public struct JSON {
 		} else {
 			return nil
 		}
+	}
+}
+
+extension JSON.Value: Equatable {
+	static func ==(lhs: JSON.Value, rhs: JSON.Value) -> Bool {
+		return false
 	}
 }
 
