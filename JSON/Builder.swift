@@ -52,6 +52,8 @@ class Builder {
 	/// Assumes the first .OpenObject Token has been consumed.
 	func buildObject() -> JSON? {
 		enum State {
+			/// We need a key or a CloseObject token.
+			case NeedKeyOrClose
 			/// We need a string that acts as the key of the member pair.
 			case NeedKey
 			/// We need a colon that acts as the key-value separator for the pair.
@@ -63,11 +65,19 @@ class Builder {
 		}
 		
 		// We now want a list of comma-separated (String: Value) pairs or a CloseObject token.
-		var state = State.NeedKey
+		var state = State.NeedKeyOrClose
 		var members = [String: JSON]()
 		do {
 			while let token = try tokenizer.next() {
 				switch state {
+				case .NeedKeyOrClose:
+					switch token {
+					case .CloseObject:
+						return JSON(.Object(members: members))
+					default:
+						break
+					}
+					fallthrough
 				case .NeedKey:
 					switch token {
 					case .String(let str):

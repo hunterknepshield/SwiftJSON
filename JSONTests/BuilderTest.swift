@@ -10,7 +10,7 @@ import XCTest
 @testable import JSON
 
 class BuilderTest: XCTestCase {
-	func assertBuilds(json: String) {
+	func assertBuilds(_ json: String) {
 		let builder = Builder(json: json)
 		guard builder.build() != nil else {
 			XCTFail("Failed to parse JSON: \(json)")
@@ -20,21 +20,27 @@ class BuilderTest: XCTestCase {
 	
 	func testLiteralValues() {
 		for literal in ["null", "true", "false"] {
-			assertBuilds(json: literal)
+			assertBuilds(literal)
 		}
 	}
 	
 	func testStringValue() {
-		assertBuilds(json: "\"This is a string\"")
+		assertBuilds("\"This is a string\"")
 	}
 	
 	func testNumberValue() {
-		assertBuilds(json: "12345")
+		assertBuilds("12345")
 	}
 	
 	func testArrayValues() {
-		assertBuilds(json: "[]")
-		assertBuilds(json: "[1]")
-		assertBuilds(json: "[1, 2, 3, 4, 5]")
+		assertBuilds("[]")
+		assertBuilds("[1]")
+		assertBuilds("[1, 2, 3, 4, 5]")
+	}
+	
+	func testObjectValues() {
+		assertBuilds("{}")
+		assertBuilds("{\"one\": 1}")
+		
 	}
 }
