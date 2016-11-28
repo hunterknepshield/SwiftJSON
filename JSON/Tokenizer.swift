@@ -204,4 +204,84 @@ class Tokenizer {
 		return result
 	}
 
+	static func validateNumber(_ number: String) -> Bool {
+		guard number.characters.count != 0 else {
+			return false
+		}
+		var hasLeadingZero = false
+		var doneInteger = false
+		var doneFraction = false
+		var fractionHasDigits = false
+		var exponentSignMayExist = true
+		var exponentHasDigits = false
+		switch number.characters.first! {
+		case "-", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+			// Normal case.
+			break
+		case "0":
+			hasLeadingZero = true
+		default:
+			return false
+		}
+		for char in number.characters {
+			if !doneInteger {
+				switch char {
+				case "0":
+					if hasLeadingZero {
+						// Already had a zero - bad.
+						return false
+					}
+					hasLeadingZero = true
+				case "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					if hasLeadingZero {
+						// We had a leading zero - bad.
+						return false
+					}
+					hasLeadingZero = false
+				case ".":
+					// Begin the fraction. We might still have an exponent.
+					doneInteger = true
+				case "E", "e":
+					// Begin the exponent. We can't have a fraction any more.
+					doneInteger = true
+					doneFraction = true
+				default:
+					return false
+				}
+			} else if !doneFraction {
+				// Fraction is optional.
+				switch char {
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					// Normal case.
+					fractionHasDigits = true
+					break
+				case "E", "e":
+					// Begin the exponent.
+					if !fractionHasDigits {
+						return false
+					}
+					doneFraction = true
+				default:
+					return false
+				}
+			} else {
+				// Must be the exponent.
+				switch char {
+				case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+					exponentSignMayExist = false
+					exponentHasDigits = true
+				case "+", "-":
+					// Too many or misplaced exponent sign.
+					if !exponentSignMayExist || exponentHasDigits {
+						return false
+					}
+					exponentSignMayExist = false
+				default:
+					return false
+				}
+			}
+		}
+		return true
+	}
+
 }
