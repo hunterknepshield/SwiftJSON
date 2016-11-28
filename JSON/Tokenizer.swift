@@ -23,7 +23,8 @@ class Tokenizer {
 		if done {
 			return nil
 		}
-		while let c = iterator.next() {
+		var temp: Character? = nil
+		while let c = temp ?? iterator.next() {
 			switch c {
 			case " ", "\t", "\r", "\n":
 				// Just eat whitespace.
@@ -84,9 +85,9 @@ class Tokenizer {
 				guard hasPriorSeparator, let result = parseNumber(startsWith: c) else {
 					throw JSONError.Malformed
 				}
+				temp = result.nextCharacter
 				hasPriorSeparator = false
-				// TODO: need a fix, we consume one too many characters in parseNumber.
-				return .Number(result)
+				return .Number(result.number)
 			default:  // Unexpected character.
 				throw JSONError.Malformed
 			}
@@ -166,42 +167,22 @@ class Tokenizer {
 		}
 	}
 	
-	private func parseNumber(startsWith beginning: Character) -> String? {
+	/// Consumes and returns a well-formed string representation of a JSON
+	/// number or nil if it was an invalid number. This function consumes one
+	/// too many characters, so it returns one if appropriate.
+	private func parseNumber(startsWith beginning: Character) -> (number: String, nextCharacter: Character?)? {
 		var result = String(beginning)
-		// We need at least one digit before a decimal point or exponent.
-		var needsDigit = beginning == "-"
-		var tempStorage: Character? = nil
-		while let c = tempStorage ?? iterator.next() {
-			tempStorage = nil
+		while let c = iterator.next() {
 			switch c {
-			case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
-				needsDigit = false
+			case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "E", "e", "+", "-":
 				result.append(c)
-			case ".":  // Beginning of optional fraction.
-				if needsDigit {
-					return nil
-				}
-				needsDigit = true
-				result.append(c)
-			case "E", "e":  // Beginning of optional exponent.
-				if needsDigit {
-					return nil
-				}
-				needsDigit = true
-				result.append(c)
-			case "+", "-":  // Optional signs after exponent's E.
-				needsDigit = true
-				result.append(c)
-			default:  // Non-numeric character, we're done making the number.
-				if needsDigit {
-					// Improperly terminated number, e.g. "123.".
-					return nil
-				}
-				return result
+			default:
+				// Non-numeric character, validate now.
+				return Tokenizer.validateNumber(result) ? (result, c) : nil
 			}
 		}
-		// We've run out of string to consume.
-		return result
+		// We've consumed the entire string, check if it's a number.
+		return Tokenizer.validateNumber(result) ? (result, nil) : nil
 	}
 
 	/// This function returns whether or not the supplied string represents a
