@@ -68,6 +68,10 @@ class Builder {
 		}
 		
 		var state = State.NeedKeyOrClose
+		// TODO: Should this be an array? That would allow values to be stored
+		// in the same order they're encountered, but would require another
+		// data structure to allow fast (non-O(n)) string lookups.
+		// var members: [(String, JSON.Value)] = []
 		var members: [String : JSON.Value] = [:]
 		do {
 			while let token = try tokenizer.next() {
