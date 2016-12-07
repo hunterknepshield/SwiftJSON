@@ -165,7 +165,7 @@ extension JSON.Value: CustomStringConvertible {
 		case .Null:
 			result = "null"
 		}
-		return indent + result
+		return result
 	}
 	
 	var description: String {
