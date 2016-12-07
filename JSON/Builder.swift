@@ -102,6 +102,11 @@ class Builder {
 					guard let value = buildValue(startingWith: token) else {
 						return nil
 					}
+					// TODO: decide on key collisions - overwrite or return nil?
+					guard members[key] == nil else {
+						// This JSON library does not allow duplicate keys.
+						return nil
+					}
 					members[key] = value
 					state = .NeedCommaOrClose
 				case .NeedCommaOrClose:
