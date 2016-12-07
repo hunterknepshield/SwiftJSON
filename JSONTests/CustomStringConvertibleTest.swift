@@ -13,8 +13,23 @@ class CustomStringConvertibleTest: XCTestCase {
     func testExample() {
 		let array = JSON(string: "[1, 2, 3]")!
 		print(array)
-		let object = JSON(string: "{\"one\": 1, \"two\": 2, \"three\": {\"one\": 1}}")!
+		// The string should indeed look like this
+		let object = JSON(string:
+			"{" +
+				"\"one\": 1," +
+				"\"two\": 2," +
+				"\"three\": {" +
+					"\"one\": 1," +
+					"\"two\": [1, 2, 3]," +
+					"\"three\": {" +
+						"\"array\": [{" +
+							"\"1\": 1" +
+						"}, 2, {" +
+							"\"3\": 3" +
+						"}]" +
+					"}" +
+				"}" +
+			"}")!
 		print(object)
-		print(array)
     }
 }

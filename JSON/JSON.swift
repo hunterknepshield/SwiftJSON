@@ -123,7 +123,11 @@ extension JSON: Equatable {
 // MARK: CustomStringConvertible
 
 extension JSON.Value: CustomStringConvertible {
-	func description(_ indent: String = "") -> String {
+	/// The string used for indentation levels in JSON.Value.description(_).
+	private static let indentLevel = "    "
+	
+	/// Returns a pretty-printed version of this value.
+	func description(_ objectIndent: String = "") -> String {
 		let result: String
 		switch self {
 		case .String(let str):
@@ -131,24 +135,29 @@ extension JSON.Value: CustomStringConvertible {
 		case .Number(let str):
 			result = str
 		case .Object(let members):
-			let newIndent = indent + "    "
 			var str = "{"
-			let strings = members.map({ return newIndent + "\"\($0.key)\" : \($0.value.description(newIndent)),\n" })
-			if strings.count > 0 {
-				str.append("\n")
+			if members.count > 0 {
+				// All pairs are indented another level beyond the brackets.
+				let memberIndent = objectIndent + JSON.Value.indentLevel
+				// Every member pair except the last needs to be separated by a
+				// comma and newline. The last one just needs the newline.
+				let strings = members.map({ "\n\(memberIndent)\"\($0.key)\": \($0.value.description(memberIndent))," })
 				for string in strings.dropLast() {
 					str.append(string)
 				}
-				// Need to remove that last comma/newline and have just a newline.
-				let last = strings.last!
-				str.append(Swift.String(last.characters.dropLast(2)))
-				str.append("\n" + indent)
+				// Need don't want a comma after the final pair.
+				str.append(Swift.String(strings.last!.characters.dropLast()))
+				// Put the closing bracket on its own line when we have at least
+				// one member. Also include proper indentation.
+				str.append("\n\(objectIndent)")
 			}
+			// If it's an empty object, we want it all on one line with no
+			// whitespace between the opening and closing brackets.
 			str.append("}")
 			result = str
 		case .Array(let elements):
 			var str = "["
-			let strings = elements.map({ return $0.description(indent) })
+			let strings = elements.map({ return $0.description(objectIndent) })
 			var first = true
 			for string in strings {
 				if first {
