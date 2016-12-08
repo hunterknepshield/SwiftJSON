@@ -233,6 +233,16 @@ extension JSON {
 			}
 		}
 	}
+	public subscript(_ index: Int) -> JSON? {
+		get {
+			switch self.value {
+			case .Array(let elements):
+				return JSON(value: elements[index])
+			default:
+				return nil
+			}
+		}
+	}
 	/// Returns the underlying JSON array. Returns nil if the JSON isn't an
 	/// array.
 	public var array: [JSON]? {
@@ -532,6 +542,61 @@ extension JSON: CustomStringConvertible {
 	}
 	
 	// TODO public var minifiedDescription: String { get }
+}
+
+// MARK: Sequence
+
+extension JSON: Sequence {
+	public struct Iterator: IteratorProtocol {
+		enum IteratorType {
+			case Array(elements: [JSON])
+			case Object(members: [(String, JSON)])
+			case NotIterable
+		}
+		
+		public typealias Element = (String, JSON)
+		
+		private let type: IteratorType
+		private var index: Int = 0
+		
+		init(json: JSON) {
+			switch json.value {
+			case .Array(let elements):
+				self.type = .Array(elements: elements.map({ return JSON(value: $0) }))
+			case .Object(let members):
+				self.type = .Object(members: members.map({ return ($0.0, JSON(value: $0.1)) }))
+			default:
+				self.type = .NotIterable
+			}
+		}
+		
+		public mutating func next() -> Element? {
+			switch self.type {
+			case .Array(let elements):
+				guard index < elements.count else {
+					return nil
+				}
+				defer {
+					index += 1
+				}
+				return (index.description, elements[index])
+			case .Object(let members):
+				guard index < members.count else {
+					return nil
+				}
+				defer {
+					index += 1
+				}
+				return members[index]
+			default:
+				return nil
+			}
+		}
+	}
+	
+	public func makeIterator() -> Iterator {
+		return Iterator(json: self)
+	}
 }
 
 // MARK: ExpressibleBy*Literal
