@@ -7,7 +7,89 @@
 //
 
 public protocol JSONEncodable {
-	var json: JSON? { get }
+	var json: JSON { get }
+}
+
+// MARK: Existing type extensions
+
+extension Bool: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Boolean(self))
+		}
+	}
+}
+
+extension String: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .String(self))
+		}
+	}
+}
+
+extension Double: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension Float: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension Int64: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension UInt64: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension Int32: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension UInt32: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension Int: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
+}
+
+extension UInt: JSONEncodable {
+	public var json: JSON {
+		get {
+			return JSON(value: .Number(self.description))
+		}
+	}
 }
 
 // TODO: Conditional conformance when available
@@ -18,26 +100,15 @@ public protocol JSONEncodable {
 // TODO: Conditional conformance when available
 // extension Array: JSONEncodable where Element: JSONEncodable {
 extension Array where Element: JSONEncodable {
-	public var jsonArray: [JSON]? {
+	public var jsonArray: [JSON] {
 		get {
-			var array = [JSON]()
-			array.reserveCapacity(self.count)
-			for element in self {
-				guard let json = element.json else {
-					return nil
-				}
-				array.append(json)
-			}
-			return array
+			return self.map({ return $0.json })
 		}
 	}
 	
-	public var json: JSON? {
+	public var json: JSON {
 		get {
-			guard let array = self.jsonArray else {
-				return nil
-			}
-			return JSON(value: .Array(elements: array.map({ return $0.value })))
+			return JSON(value: .Array(elements: self.jsonArray.map({ return $0.value })))
 		}
 	}
 }
