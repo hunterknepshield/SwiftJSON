@@ -20,7 +20,7 @@ class Builder {
 		return JSON(value: value)
 	}
 	
-	func buildValue() -> JSON.Value? {
+	func buildValue() -> JSONValue? {
 		// We can have a top-level number/string/literal, an object, or an array.
 		do {
 			let maybeToken = try tokenizer.next()
@@ -33,7 +33,7 @@ class Builder {
 		}
 	}
 	
-	func buildValue(startingWith initial: Token) -> JSON.Value? {
+	func buildValue(startingWith initial: Token) -> JSONValue? {
 		switch initial {
 		case .OpenObject:
 			return buildObject()
@@ -53,7 +53,7 @@ class Builder {
 	}
 	
 	/// Assumes the initial .OpenObject Token has been consumed.
-	func buildObject() -> JSON.Value? {
+	func buildObject() -> JSONValue? {
 		enum State {
 			/// We need a key or a CloseObject token.
 			case NeedKeyOrClose
@@ -71,8 +71,8 @@ class Builder {
 		// TODO: Should this be an array? That would allow values to be stored
 		// in the same order they're encountered, but would require another
 		// data structure to allow fast (non-O(n)) string lookups.
-		// var members: [(String, JSON.Value)] = []
-		var members: [String : JSON.Value] = [:]
+		// var members: [(String, JSONValue)] = []
+		var members: [String : JSONValue] = [:]
 		do {
 			while let token = try tokenizer.next() {
 				switch state {
@@ -128,7 +128,7 @@ class Builder {
 	}
 	
 	/// Assumes the initial .OpenArray Token has been consumed.
-	func buildArray() -> JSON.Value? {
+	func buildArray() -> JSONValue? {
 		enum State {
 			/// We need a value or a CloseArray token.
 			case NeedValueOrClose
@@ -139,7 +139,7 @@ class Builder {
 		}
 		
 		var state = State.NeedValueOrClose
-		var elements: [JSON.Value] = []
+		var elements: [JSONValue] = []
 		do {
 			while let token = try tokenizer.next() {
 				switch state {

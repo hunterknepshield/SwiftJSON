@@ -6,20 +6,23 @@
 //  Copyright © 2016 Hunter Knepshield. All rights reserved.
 //
 
+/// The actual backing enum that holds type information. Never exposed outside
+/// this module.
+enum JSONValue {
+	case String(Swift.String)
+	case Number(Swift.String)
+	case Object(members: [Swift.String: JSONValue])
+	case Array(elements: [JSONValue])
+	case Boolean(Bool)
+	case Null
+}
+
+/// A representation of JSON.
 public struct JSON {
-	enum Value {
-		case String(Swift.String)
-		case Number(Swift.String)
-		case Object(members: [Swift.String: Value])
-		case Array(elements: [Value])
-		case Boolean(Bool)
-		case Null
-	}
-	
-	var value: Value
+	var value: JSONValue
 	
 	/// Used internally by Builder.
-	init(value: Value) {
+	init(value: JSONValue) {
 		self.value = value
 	}
 }
@@ -42,22 +45,28 @@ extension JSON {
 	public init(array: [JSON]) {
 		self.init(value: .Array(elements: array.map({ return $0.value })))
 	}
+	
+	/// Internal initializer used by init(objectMembers:) as well as
+	/// ExpressibleByDictionaryLiteral's initializer.
+	internal init(objectMembers members: [(String, JSON)]) {
+		var rawMembers: [String: JSONValue] = [:]
+		// TODO: apply decision about duplicate keys here as well.
+		for (key, value) in members {
+			rawMembers[key] = value.value
+		}
+		self.init(value: .Object(members: rawMembers))
+	}
 
 	/// Initializes a JSON object with the specified members.
 	public init(objectMembers members: [String: JSON]) {
-		var rawMembers: [String: JSON.Value] = [:]
-		// TODO: apply decision about duplicate keys here as well.
-		for member in members {
-			rawMembers[member.key] = member.value.value
-		}
-		self.init(value: .Object(members: rawMembers))
+		self.init(objectMembers: members.map({ return ($0.key, $0.value) }))
 	}
 }
 
 // MARK: Integer conversion
 // Macros sure would be useful here...
 
-extension JSON.Value {
+extension JSONValue {
 	/// The actual root conversion. Everything else is implemented as a type
 	/// cast from a Double.
 	var double: Double? {
@@ -366,9 +375,9 @@ extension JSON {
 
 // MARK: Equatable
 
-extension JSON.Value: Equatable {
+extension JSONValue: Equatable {
 	/// Complexity: O(n).
-	static func ==(lhs: JSON.Value, rhs: JSON.Value) -> Bool {
+	static func ==(lhs: JSONValue, rhs: JSONValue) -> Bool {
 		switch (lhs, rhs) {
 		case (.Null, .Null):
 			return true
@@ -411,8 +420,8 @@ extension JSON: Equatable {
 
 // MARK: CustomStringConvertible
 
-extension JSON.Value: CustomStringConvertible {
-	/// The string used for indentation levels in JSON.Value.description(_).
+extension JSONValue: CustomStringConvertible {
+	/// The string used for indentation levels in JSONValue.description(_).
 	private static let indentLevel = "    "
 	
 	/// Returns a pretty-printed version of this value.
@@ -427,7 +436,7 @@ extension JSON.Value: CustomStringConvertible {
 			var str = "{"
 			if members.count > 0 {
 				// All pairs are indented another level beyond the brackets.
-				let memberIndent = objectIndent + JSON.Value.indentLevel
+				let memberIndent = objectIndent + JSONValue.indentLevel
 				// Every member pair except the last needs to be separated by a
 				// comma and newline. The last one just needs the newline.
 				let strings = members.map({ "\n\(memberIndent)\"\($0.key)\": \($0.value.description(memberIndent))," })
@@ -483,7 +492,76 @@ extension JSON: CustomStringConvertible {
 	// TODO public var minifiedDescription: String { get }
 }
 
-// TODO: extension JSON: ExpressibleBy*Literal
+// MARK: ExpressibleBy*Literal
+
+extension JSON: ExpressibleByNilLiteral {
+	/// Initialize a JSON null value using Swift's nil.
+	public init(nilLiteral: ()) {
+		self.init(value: .Null)
+	}
+}
+
+extension JSON: ExpressibleByBooleanLiteral {
+	public typealias BooleanLiteralType = Bool
+	
+	public init(booleanLiteral value: JSON.BooleanLiteralType) {
+		self.init(value: .Boolean(value))
+	}
+}
+
+extension JSON: ExpressibleByFloatLiteral {
+	public typealias FloatLiteralType = Double
+	
+	public init(floatLiteral value: JSON.FloatLiteralType) {
+		self.init(value: .Number(value.description))
+	}
+}
+
+extension JSON: ExpressibleByIntegerLiteral {
+	public typealias IntegerLiteralType = IntMax
+	
+	public init(integerLiteral value: JSON.IntegerLiteralType) {
+		self.init(value: .Number(value.description))
+	}
+}
+
+/// Note: This conformance initializes a JSON string. It does not initialize any
+/// other JSON type. To initialize a JSON object, array, or other value from a
+/// string, see `JSON.init(string:)`.
+extension JSON: ExpressibleByStringLiteral {
+	public typealias UnicodeScalarLiteralType = StringLiteralType
+	public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
+	public typealias StringLiteralType = String
+	
+	public init(unicodeScalarLiteral value: JSON.UnicodeScalarLiteralType) {
+		self.init(value: .String(value))
+	}
+
+	public init(extendedGraphemeClusterLiteral value: JSON.ExtendedGraphemeClusterLiteralType) {
+		self.init(value: .String(value))
+	}
+
+	public init(stringLiteral value: JSON.StringLiteralType) {
+		self.init(value: .String(value))
+	}
+}
+
+extension JSON: ExpressibleByArrayLiteral {
+	public typealias Element = JSON
+
+	public init(arrayLiteral elements: JSON.Element...) {
+		self.init(array: elements)
+	}
+}
+
+extension JSON: ExpressibleByDictionaryLiteral {
+	public typealias Key = String
+	public typealias Value = JSON
+	
+	public init(dictionaryLiteral elements: (JSON.Key, JSON.Value)...) {
+		self.init(objectMembers: elements)
+	}
+}
 
 // TODO: investigate possibility of overriding "as?" casts
 // Syntax like this would be very useful:
