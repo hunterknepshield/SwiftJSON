@@ -6,6 +6,6 @@
 //  Copyright © 2016 Hunter Knepshield. All rights reserved.
 //
 
-public enum JSONError: Error {
+enum JSONError: Error {
 	case Malformed
 }
