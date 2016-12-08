@@ -20,6 +20,7 @@
 		5A6599711DF9037B008B8AB9 /* JSONDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6599701DF9037B008B8AB9 /* JSONDecodable.swift */; };
 		5A6599731DF90EC8008B8AB9 /* JSONDecodableTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6599721DF90EC8008B8AB9 /* JSONDecodableTest.swift */; };
 		5A6599751DF9327A008B8AB9 /* ExpressibleByLiteralTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6599741DF9327A008B8AB9 /* ExpressibleByLiteralTest.swift */; };
+		5A6708B71DF9D981004AF9C0 /* ExistingTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6708B61DF9D981004AF9C0 /* ExistingTypeExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		5A6599701DF9037B008B8AB9 /* JSONDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodable.swift; sourceTree = "<group>"; };
 		5A6599721DF90EC8008B8AB9 /* JSONDecodableTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodableTest.swift; sourceTree = "<group>"; };
 		5A6599741DF9327A008B8AB9 /* ExpressibleByLiteralTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressibleByLiteralTest.swift; sourceTree = "<group>"; };
+		5A6708B61DF9D981004AF9C0 /* ExistingTypeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExistingTypeExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 			children = (
 				5A0E54371DECA619003E2E42 /* Info.plist */,
 				5A0E545C1DECBBF6003E2E42 /* JSON.h */,
+				5A6708B61DF9D981004AF9C0 /* ExistingTypeExtensions.swift */,
 				5A0E54601DECCCD5003E2E42 /* JSON.swift */,
 				5A0E545E1DECCC97003E2E42 /* JSONBuilder.swift */,
 				5A6599701DF9037B008B8AB9 /* JSONDecodable.swift */,
@@ -231,6 +234,7 @@
 				5A6599711DF9037B008B8AB9 /* JSONDecodable.swift in Sources */,
 				5A0E54501DECA679003E2E42 /* JSONTokenizer.swift in Sources */,
 				5A0E545F1DECCC97003E2E42 /* JSONBuilder.swift in Sources */,
+				5A6708B71DF9D981004AF9C0 /* ExistingTypeExtensions.swift in Sources */,
 				5A65996F1DF90340008B8AB9 /* JSONEncodable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
