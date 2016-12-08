@@ -30,15 +30,25 @@ public struct JSON {
 // MARK: Public initializers
 
 extension JSON {
-	/// Initializes a JSON instance from the specified string. The string may be
+	/// Initializes a JSON instance from the specified String. The string may be
 	/// a JSON fragment (i.e. top-level value or literal), a JSON object, or a
-	/// JSON array.
-	public init?(string: String) {
-		let builder = JSONBuilder(json: string)
+	/// JSON array. Returns nil if the string produces malformed JSON.
+	public init?(rawJson: String) {
+		let builder = JSONBuilder(json: rawJson)
 		guard let json = builder.build() else {
 			return nil
 		}
 		self = json
+	}
+	
+	/// Initializes a JSON instance from the specified Data instance. Returns
+	/// nil if the data cannot be represented as a String or if the data
+	/// produces malformed JSON.
+	public init?(data: Data, encoding: String.Encoding = String.Encoding.utf8) {
+		guard let string = String(data: data, encoding: encoding) else {
+			return nil
+		}
+		self.init(rawJson: string)
 	}
 	
 	/// Initializes a JSON array with the specified elements.

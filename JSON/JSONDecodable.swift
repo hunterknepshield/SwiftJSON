@@ -26,7 +26,7 @@ public protocol JSONDecodable {
 
 extension JSONDecodable {
 	public init?(rawJson: String) {
-		guard let json = JSON(string: rawJson) else {
+		guard let json = JSON(rawJson: rawJson) else {
 			return nil
 		}
 		self.init(json: json)

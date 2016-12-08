@@ -11,10 +11,10 @@ import XCTest
 
 class CustomStringConvertibleTest: XCTestCase {
     func testExample() {
-		let array = JSON(string: "[1, 2, 3]")!
+		let array = JSON(rawJson: "[1, 2, 3]")!
 		print(array)
 		// The string should indeed look like this
-		let object = JSON(string:
+		let object = JSON(rawJson:
 			"{" +
 				"\"one\": 1," +
 				"\"two\": 2," +

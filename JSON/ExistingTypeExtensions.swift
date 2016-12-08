@@ -134,7 +134,7 @@ extension Array where Element: JSONDecodable {
 	/// if a JSON object cannot be constructed from the supplied string or if
 	/// `init?(json:)` fails.
 	public init?(rawJson: String) {
-		guard let json = JSON(string: rawJson) else {
+		guard let json = JSON(rawJson: rawJson) else {
 			return nil
 		}
 		self.init(json: json)
