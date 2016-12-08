@@ -18,6 +18,41 @@ public struct JSON {
 	
 	var value: Value
 	
+	/// Used internally by Builder.
+	init(_ value: Value) {
+		self.value = value
+	}
+}
+
+// MARK: Public constructor
+
+extension JSON {
+	public init?(string: String) {
+		let builder = Builder(json: string)
+		guard let json = builder.build() else {
+			return nil
+		}
+		self = json
+	}
+}
+
+// MARK: Properties
+
+extension JSON {
+	// TODO: should this be mutable? i.e. define a setter?
+	public subscript(_ key: String) -> JSON? {
+		get {
+			switch self.value {
+			case .Object(let members):
+				guard let value = members[key] else {
+					return nil
+				}
+				return JSON(value)
+			default:
+				return nil
+			}
+		}
+	}
 	public var array: [JSON]? {
 		get {
 			switch self.value {
@@ -58,33 +93,14 @@ public struct JSON {
 			}
 		}
 	}
-	
-	/// Used internally by Builder.
-	init(_ value: Value) {
-		self.value = value
-	}
-	
-	public init?(string: String) {
-		let builder = Builder(json: string)
-		if let json = builder.build() {
-			self = json
-		} else {
-			return nil
-		}
-	}
 }
 
 // MARK: Equatable
 
 extension JSON.Value: Equatable {
+	/// Complexity: O(n).
 	static func ==(lhs: JSON.Value, rhs: JSON.Value) -> Bool {
-		return false
-	}
-}
-
-extension JSON: Equatable {
-	public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-		switch (lhs.value, rhs.value) {
+		switch (lhs, rhs) {
 		case (.Null, .Null):
 			return true
 		case (.Boolean(let lb), .Boolean(let rb)):
@@ -106,17 +122,21 @@ extension JSON: Equatable {
 				return false
 			}
 			for (lkey, lvalue) in lm {
-				guard let rvalue = rm[lkey] else {
-					return false
-				}
-				if lvalue != rvalue {
+				if lvalue != rm[lkey] {
 					return false
 				}
 			}
 			return true
-		default:
+		default:  // Non-matching pair.
 			return false
 		}
+	}
+}
+
+extension JSON: Equatable {
+	/// Complexity: O(n).
+	public static func ==(lhs: JSON, rhs: JSON) -> Bool {
+		return lhs.value == rhs.value
 	}
 }
 
