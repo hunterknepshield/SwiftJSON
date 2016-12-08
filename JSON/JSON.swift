@@ -547,6 +547,7 @@ extension JSON: ExpressibleByStringLiteral {
 }
 
 extension JSON: ExpressibleByArrayLiteral {
+	// TODO: make this JSONEncodable once conditional conformances are available
 	public typealias Element = JSON
 
 	public init(arrayLiteral elements: JSON.Element...) {
@@ -556,6 +557,7 @@ extension JSON: ExpressibleByArrayLiteral {
 
 extension JSON: ExpressibleByDictionaryLiteral {
 	public typealias Key = String
+	// TODO: make this JSONEncodable once conditional conformances are available
 	public typealias Value = JSON
 	
 	public init(dictionaryLiteral elements: (JSON.Key, JSON.Value)...) {
