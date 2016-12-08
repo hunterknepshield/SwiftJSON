@@ -10,18 +10,14 @@ import XCTest
 @testable import JSON
 
 class TokenizerTest: XCTestCase {
-	func tokenizerHelper(_ json: String, _ tokens: [Token]) {
-		let tokenizer = Tokenizer(json: json)
-		do {
-			for expected in tokens {
-				guard let actual = try tokenizer.next() else {
-					XCTFail("Failed to produce more tokens while attempting to tokenize \(json)")
-					return
-				}
-				XCTAssertEqual(expected, actual)
+	func tokenizerHelper(_ json: String, _ tokens: [JSONToken]) {
+		let tokenizer = JSONTokenizer(json: json)
+		for expected in tokens {
+			guard let actual = tokenizer.next() else {
+				XCTFail("Failed to produce more tokens while attempting to tokenize \(json)")
+				return
 			}
-		} catch {
-			XCTFail("Error thrown while attempting to tokenize \(json)")
+			XCTAssertEqual(expected, actual)
 		}
 	}
 	
@@ -73,25 +69,17 @@ class TokenizerTest: XCTestCase {
 	
 	/// Tokenizes the string up to the expected amount of tokens, then asserts
 	/// that attempting to call next() again will throw an error.
-	func badTokenizerHelper(_ json: String, _ tokens: [Token]) {
-		let tokenizer = Tokenizer(json: json)
-		do {
-			for expected in tokens {
-				guard let actual = try tokenizer.next() else {
-					XCTFail("Failed to produce more tokens while attempting to tokenize \(json)")
-					return
-				}
-				XCTAssertEqual(expected, actual)
+	func badTokenizerHelper(_ json: String, _ tokens: [JSONToken]) {
+		let tokenizer = JSONTokenizer(json: json)
+		for expected in tokens {
+			guard let actual = tokenizer.next() else {
+				XCTFail("Failed to produce more tokens while attempting to tokenize \(json)")
+				return
 			}
-		} catch {
-			XCTFail("Threw too early while attempting to tokenize \(json)")
+			XCTAssertEqual(expected, actual)
 		}
-		do {
-			_ = try tokenizer.next()
-			XCTFail("Did not throw at expected time while attempting to tokenize \(json)")
-		} catch {
-			// This is what we want.
-		}
+		let bad = tokenizer.next()
+		XCTAssertNil(bad, "Did not return nil at expected time while attempting to tokenize \(json)")
 	}
 	
 	func testInvalidTokenization() {

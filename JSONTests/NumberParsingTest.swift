@@ -12,10 +12,10 @@ import XCTest
 class NumberParsingTest: XCTestCase {
 	func testNumberValidation() {
 		func expectTrue(_ s: String) {
-			XCTAssertTrue(Tokenizer.validateNumber(s), "Failed on \(s)")
+			XCTAssertTrue(JSONTokenizer.validateNumber(s), "Failed on \(s)")
 		}
 		func expectFalse(_ s: String) {
-			XCTAssertFalse(Tokenizer.validateNumber(s), "Incorrectly passed on \(s)")
+			XCTAssertFalse(JSONTokenizer.validateNumber(s), "Incorrectly passed on \(s)")
 		}
 		for i in -100...100 {
 			expectTrue("\(i)")

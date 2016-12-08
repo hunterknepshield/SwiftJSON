@@ -11,7 +11,7 @@ import XCTest
 
 class BuilderTest: XCTestCase {
 	func assertBuilds(_ json: String) {
-		let builder = Builder(json: json)
+		let builder = JSONBuilder(json: json)
 		guard builder.build() != nil else {
 			XCTFail("Failed to parse JSON: \(json)")
 			return

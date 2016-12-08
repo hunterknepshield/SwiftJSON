@@ -21,7 +21,7 @@ enum JSONValue {
 public struct JSON {
 	var value: JSONValue
 	
-	/// Used internally by Builder.
+	/// Used internally by JSONBuilder.
 	init(value: JSONValue) {
 		self.value = value
 	}
@@ -34,7 +34,7 @@ extension JSON {
 	/// a JSON fragment (i.e. top-level value or literal), a JSON object, or a
 	/// JSON array.
 	public init?(string: String) {
-		let builder = Builder(json: string)
+		let builder = JSONBuilder(json: string)
 		guard let json = builder.build() else {
 			return nil
 		}
