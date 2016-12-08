@@ -479,7 +479,11 @@ extension JSON: CustomStringConvertible {
 			return self.value.description
 		}
 	}
+	
+	// TODO public var minifiedDescription: String { get }
 }
+
+// TODO: extension JSON: ExpressibleBy*Literal
 
 // TODO: investigate possibility of overriding "as?" casts
 // Syntax like this would be very useful:
