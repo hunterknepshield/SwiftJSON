@@ -25,8 +25,32 @@ public struct JSON {
 }
 
 // MARK: Integer conversion
+// Macros sure would be useful here...
 
 extension JSON.Value {
+	var double: Double? {
+		get {
+			switch self {
+			case .Number(let string):
+				return Double(string)
+			default:
+				return nil
+			}
+		}
+	}
+	var float: Float? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return Float(double)
+			default:
+				return nil
+			}
+		}
+	}
 	var int64: Int64? {
 		get {
 			switch self {
@@ -105,29 +129,6 @@ extension JSON.Value {
 			}
 		}
 	}
-	var double: Double? {
-		get {
-			switch self {
-			case .Number(let string):
-				return Double(string)
-			default:
-				return nil
-			}
-		}
-	}
-	var float: Float? {
-		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return Float(double)
-			default:
-				return nil
-			}
-		}
-	}
 }
 
 // MARK: Public constructor
@@ -179,6 +180,16 @@ extension JSON {
 			}
 		}
 	}
+	public var double: Double? {
+		get {
+			return self.value.double
+		}
+	}
+	public var float: Float? {
+		get {
+			return self.value.float
+		}
+	}
 	public var int64: Int64? {
 		get {
 			return self.value.int64
@@ -207,16 +218,6 @@ extension JSON {
 	public var uint: UInt? {
 		get {
 			return self.value.uint
-		}
-	}
-	public var double: Double? {
-		get {
-			return self.value.double
-		}
-	}
-	public var float: Float? {
-		get {
-			return self.value.float
 		}
 	}
 	public var bool: Bool? {
