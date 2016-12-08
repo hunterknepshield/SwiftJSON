@@ -21,10 +21,11 @@ class JSONBuilder {
 	}
 	
 	func buildValue(startingWith initial: JSONToken? = nil) -> JSONValue? {
-		guard let first = initial ?? tokenizer.next() else {
+		guard let token = initial ?? tokenizer.next() else {
+			// We don't have any tokens to consume. This is an error.
 			return nil
 		}
-		switch first {
+		switch token {
 		case .OpenObject:
 			return buildObject()
 		case .OpenArray:
