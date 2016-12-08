@@ -270,13 +270,6 @@ extension JSON {
 			}
 		}
 	}
-	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
-	/// literal.
-	public var boolean: Bool? {
-		get {
-			return self.bool
-		}
-	}
 }
 
 // MARK: Type inspection
@@ -336,11 +329,6 @@ extension JSON {
 			default:
 				return false
 			}
-		}
-	}
-	public var isBoolean: Bool {
-		get {
-			return self.isBool
 		}
 	}
 	/// Returns whether or not this JSON is a null value (using the `null`
