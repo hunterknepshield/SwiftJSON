@@ -149,6 +149,8 @@ extension JSON.Value {
 
 extension JSON {
 	// TODO: should this be mutable? i.e. define a setter?
+	/// Fetches a value from a JSON object with the supplied key. Returns nil if
+	/// the JSON isn't an object or if no such key exists in the object.
 	public subscript(_ key: String) -> JSON? {
 		get {
 			switch self.value {
@@ -162,6 +164,8 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns the underlying JSON array. Returns nil if the JSON isn't an
+	/// array.
 	public var array: [JSON]? {
 		get {
 			switch self.value {
@@ -172,6 +176,8 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns the underlying JSON string. Returns nil if the JSON isn't a
+	/// string.
 	public var string: String? {
 		get {
 			switch self.value {
@@ -182,46 +188,78 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns the underlying numeric value as a Double. Returns nil if the
+	/// JSON isn't a number or the number can't be represented using a Double.
 	public var double: Double? {
 		get {
 			return self.value.double
 		}
 	}
+	/// Returns the underlying numeric value as a Float. Returns nil if the JSON
+	/// isn't a number or the number can't be represented using a Float. May
+	/// cause a runtime error if the value cannot be converted to a Float from a
+	/// Double.
 	public var float: Float? {
 		get {
 			return self.value.float
 		}
 	}
+	/// Returns the underlying numeric value as an Int64. Returns nil if the
+	/// JSON isn't a number or the number can't be represented using an Int64.
+	/// May cause a runtime error if the value cannot be converted to an Int64
+	/// from a Double.
 	public var int64: Int64? {
 		get {
 			return self.value.int64
 		}
 	}
+	/// Returns the underlying numeric value as a UInt64. Returns nil if the
+	/// JSON isn't a number or the number can't be represented using a UInt64.
+	/// May cause a runtime error if the value cannot be converted to a UInt64
+	/// from a Double.
 	public var uint64: UInt64? {
 		get {
 			return self.value.uint64
 		}
 	}
+	/// Returns the underlying numeric value as an Int32. Returns nil if the
+	/// JSON isn't a number or the number can't be represented using an Int32.
+	/// May cause a runtime error if the value cannot be converted to an Int32
+	/// from a Double.
 	public var int32: Int32? {
 		get {
 			return self.value.int32
 		}
 	}
+	/// Returns the underlying numeric value as a UInt32. Returns nil if the
+	/// JSON isn't a number or the number can't be represented using a UInt32.
+	/// May cause a runtime error if the value cannot be converted to a UInt32
+	/// from a Double.
 	public var uint32: UInt32? {
 		get {
 			return self.value.uint32
 		}
 	}
+	/// Returns the underlying numeric value as an Int. Returns nil if the JSON
+	/// isn't a number or the number can't be represented using an Int. May
+	/// cause a runtime error if the value cannot be converted to an Int from a
+	/// Double.
 	public var int: Int? {
 		get {
 			return self.value.int
 		}
 	}
+	/// Returns the underlying numeric value as a UInt. Returns nil if the JSON
+	/// isn't a number or the number can't be represented using a UInt. May
+	/// cause a runtime error if the value cannot be converted to a UInt from a
+	/// Double.
 	public var uint: UInt? {
 		get {
 			return self.value.uint
 		}
 	}
+	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
+	/// literal.
 	public var bool: Bool? {
 		get {
 			switch self.value {
@@ -232,11 +270,19 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
+	/// literal.
+	public var boolean: Bool? {
+		get {
+			return self.bool
+		}
+	}
 }
 
 // MARK: Type inspection
 
 extension JSON {
+	/// Returns whether or not this JSON is a string.
 	public var isString: Bool {
 		get {
 			switch self.value {
@@ -247,6 +293,7 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns whether or not this JSON is a number.
 	public var isNumber: Bool {
 		get {
 			switch self.value {
@@ -257,6 +304,7 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns whether or not this JSON is an object.
 	public var isObject: Bool {
 		get {
 			switch self.value {
@@ -267,6 +315,7 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns whether or not this JSON is an array.
 	public var isArray: Bool {
 		get {
 			switch self.value {
@@ -277,6 +326,8 @@ extension JSON {
 			}
 		}
 	}
+	/// Returns whether or not this JSON is a boolean (using the `true` or
+	/// `false` literals).
 	public var isBool: Bool {
 		get {
 			switch self.value {
@@ -287,6 +338,14 @@ extension JSON {
 			}
 		}
 	}
+	public var isBoolean: Bool {
+		get {
+			return self.isBool
+		}
+	}
+	/// Returns whether or not this JSON is a null value (using the `null`
+	/// literal). This concept is orthogonal to Swift's `nil`; each has a
+	/// different meaning.
 	public var isNull: Bool {
 		get {
 			switch self.value {
