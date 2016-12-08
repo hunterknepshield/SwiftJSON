@@ -141,12 +141,16 @@ extension Array where Element: JSONDecodable {
 	}
 }
 
+// The following definition would be redundant, even when considering `null`
+// JSON values:
+// extension Optional where Wrapped: JSONDecodable { /* ... */ }
+
 // MARK: JSONEncodable
 
 extension Bool: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Boolean(self))
+			return self ? JSON.true : JSON.false
 		}
 	}
 }
@@ -240,6 +244,24 @@ extension Array where Element: JSONEncodable {
 	public var json: JSON {
 		get {
 			return JSON(array: self.jsonArray)
+		}
+	}
+}
+
+// TODO: Conditional conformance when available
+// extension Optional: JSONEncodable where Wrapped: JSONEncodable {
+extension Optional where Wrapped: JSONEncodable {
+	/// `Optional<JSONEncodable>`'s `json` property will return a null JSON
+	/// instance if the underlying value is `nil`. Otherwise, it returns the
+	/// wrapped value's `json` property.
+	public var json: JSON {
+		get {
+			switch self {
+			case .none:
+				return JSON.null
+			case .some(let wrapped):
+				return wrapped.json
+			}
 		}
 	}
 }
