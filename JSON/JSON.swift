@@ -24,10 +24,24 @@ public struct JSON {
 	}
 }
 
+// MARK: Public constructor
+
+extension JSON {
+	public init?(string: String) {
+		let builder = Builder(json: string)
+		guard let json = builder.build() else {
+			return nil
+		}
+		self = json
+	}
+}
+
 // MARK: Integer conversion
 // Macros sure would be useful here...
 
 extension JSON.Value {
+	/// The actual root conversion. Everything else is implemented as a type
+	/// cast from a Double.
 	var double: Double? {
 		get {
 			switch self {
@@ -128,18 +142,6 @@ extension JSON.Value {
 				return nil
 			}
 		}
-	}
-}
-
-// MARK: Public constructor
-
-extension JSON {
-	public init?(string: String) {
-		let builder = Builder(json: string)
-		guard let json = builder.build() else {
-			return nil
-		}
-		self = json
 	}
 }
 
