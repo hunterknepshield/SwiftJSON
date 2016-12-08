@@ -217,7 +217,7 @@ extension JSON {
 // MARK: Properties
 
 extension JSON {
-	// TODO: should this be mutable? i.e. define a setter?
+	// TODO: should these subscripts be mutable?
 	/// Fetches a value from a JSON object with the supplied key. Returns nil if
 	/// the JSON isn't an object or if no such key exists in the object.
 	public subscript(_ key: String) -> JSON? {
@@ -233,6 +233,9 @@ extension JSON {
 			}
 		}
 	}
+	/// Fetches a value from a JSON array with the specified index. Returns nil
+	/// if the JSON isn't an array. May cause a runtime error if the index is
+	/// out of bounds.
 	public subscript(_ index: Int) -> JSON? {
 		get {
 			switch self.value {
@@ -346,6 +349,23 @@ extension JSON {
 				return bool
 			default:
 				return nil
+			}
+		}
+	}
+	
+	// TODO: Decide whether -1 is ok or if nil should be returned.
+	/// Returns the count of the number of members if this is a JSON object, the
+	/// count of the number of elements if this is a JSON array, or -1,
+	/// indicating this type doesn't have a count.
+	public var count: Int {
+		get {
+			switch self.value {
+			case .Object(let members):
+				return members.count
+			case .Array(let elements):
+				return elements.count
+			default:
+				return -1
 			}
 		}
 	}
