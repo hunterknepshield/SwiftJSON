@@ -33,11 +33,104 @@ extension JSONDecodable {
 	}
 }
 
+// MARK: Existing type extensions
+
+extension Bool: JSONDecodable {
+	public init?(json: JSON) {
+		guard let bool = json.bool else {
+			return nil
+		}
+		self.init(bool)
+	}
+}
+
+extension String: JSONDecodable {
+	public init?(json: JSON) {
+		guard let string = json.string else {
+			return nil
+		}
+		self.init(string)
+	}
+}
+
+// Macros would be really useful here again...
+
+extension Double: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.double else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension Float: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.float else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension Int64: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.int64 else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension UInt64: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.uint64 else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension Int32: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.int32 else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension UInt32: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.uint32 else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension Int: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.int else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
+extension UInt: JSONDecodable {
+	public init?(json: JSON) {
+		guard let number = json.uint else {
+			return nil
+		}
+		self.init(number)
+	}
+}
+
 // TODO: Conditional conformance when available
 // extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
 //     public init?(json: JSON) { /* ... */ }
 // }
-
 
 // TODO: Conditional conformance when available
 // extension Array: JSONDecodable where Element: JSONDecodable {
