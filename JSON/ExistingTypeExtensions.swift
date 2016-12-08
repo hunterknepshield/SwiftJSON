@@ -227,23 +227,10 @@ extension UInt: JSONEncodable {
 	}
 }
 
-// TODO: Conditional conformance when available
-// extension Dictionary: JSONEncodable where Key: CustomStringConvertible, Value: JSONEncodable {
-// TODO: Same-type requirement when available
-// extension Dictionary where Key == String, Value: JSONEncodable {
-extension Dictionary where Key: CustomStringConvertible, Value: JSONEncodable {
-	/// Once conditional conformance is available, a dictionary literal will be
-	/// able to initialize a JSON instance on its own.
-	public var json: JSON {
-		get {
-			var members: [String : JSON] = [:]
-			for (key, value) in self {
-				members[key.description] = value.json
-			}
-			return JSON(objectMembers: members)
-		}
-	}
-}
+// TODO: When conditional conformance and same-type requirements are available
+// extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
+//     public var json: JSON { get { /* ... */ } }
+// }
 
 // TODO: Conditional conformance when available
 // extension Array: JSONEncodable where Element: JSONEncodable {

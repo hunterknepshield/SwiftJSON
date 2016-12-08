@@ -42,13 +42,13 @@ class ExpressibleByLiteralTest: XCTestCase {
 	
 	func testExpressibleByArrayLiteral() {
 		// Types within the array can be heterogeneous
-		let arrayJson: JSON = [1, "2", 3.14, [4].json, nil as JSON]
+		let arrayJson: JSON = [1, "2", 3.14, [4] as JSON, nil as JSON]
 		XCTAssertEqual(arrayJson.value, JSONValue.Array(elements: [.Number("1"), .String("2"), .Number("3.14"), .Array(elements: [.Number("4")]), .Null]))
 	}
 	
 	func testExpressibleByDictionaryLiteral() {
 		// Types within the dictionary can be heterogeneous
-		let objectJson: JSON = ["test": 1, "array": [1].json, "string": "12345", "nestedObject": ["key": "value"].json]
-		XCTAssertEqual(objectJson.value, JSONValue.Object(members: ["test": .Number("1"), "array": .Array(elements: [.Number("1")]), "string": .String("12345"), "nestedObject": .Object(members: ["key": .String("value")])]))
+		let objectJson: JSON = ["test": 1, "emptyArray": [] as JSON, "string": "12345", "nestedObject": ["key": "value"] as JSON]
+		XCTAssertEqual(objectJson.value, JSONValue.Object(members: ["test": .Number("1"), "emptyArray": .Array(elements: []), "string": .String("12345"), "nestedObject": .Object(members: ["key": .String("value")])]))
 	}
 }
