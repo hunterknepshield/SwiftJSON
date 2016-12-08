@@ -53,9 +53,9 @@ class JSONTokenizer {
 		self.iterator = self.json.characters.makeIterator()
 	}
 	
-	/// Decodes the next available construct as a JSONToken, if possible. Returns
-	/// nil if the end of the string has been reached, and throws if something
-	/// is malformed.
+	/// Decodes the next available construct as a JSONToken, if possible.
+	/// Returns .EndOfString if the end of the string has been reached, and
+	/// returns nil if something is malformed.
 	func next() -> JSONToken? {
 		if done {
 			return .EndOfString
