@@ -24,6 +24,112 @@ public struct JSON {
 	}
 }
 
+// MARK: Integer conversion
+
+extension JSON.Value {
+	var int64: Int64? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return Int64(double)
+			default:
+				return nil
+			}
+		}
+	}
+	var uint64: UInt64? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return UInt64(double)
+			default:
+				return nil
+			}
+		}
+	}
+	var int32: Int32? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return Int32(double)
+			default:
+				return nil
+			}
+		}
+	}
+	var uint32: UInt32? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return UInt32(double)
+			default:
+				return nil
+			}
+		}
+	}
+	var int: Int? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return Int(double)
+			default:
+				return nil
+			}
+		}
+	}
+	var uint: UInt? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return UInt(double)
+			default:
+				return nil
+			}
+		}
+	}
+	var double: Double? {
+		get {
+			switch self {
+			case .Number(let string):
+				return Double(string)
+			default:
+				return nil
+			}
+		}
+	}
+	var float: Float? {
+		get {
+			switch self {
+			case .Number(_):
+				guard let double = self.double else {
+					return nil
+				}
+				return Float(double)
+			default:
+				return nil
+			}
+		}
+	}
+}
+
 // MARK: Public constructor
 
 extension JSON {
@@ -71,6 +177,46 @@ extension JSON {
 			default:
 				return nil
 			}
+		}
+	}
+	public var int64: Int64? {
+		get {
+			return self.value.int64
+		}
+	}
+	public var uint64: UInt64? {
+		get {
+			return self.value.uint64
+		}
+	}
+	public var int32: Int32? {
+		get {
+			return self.value.int32
+		}
+	}
+	public var uint32: UInt32? {
+		get {
+			return self.value.uint32
+		}
+	}
+	public var int: Int? {
+		get {
+			return self.value.int
+		}
+	}
+	public var uint: UInt? {
+		get {
+			return self.value.uint
+		}
+	}
+	public var double: Double? {
+		get {
+			return self.value.double
+		}
+	}
+	public var float: Float? {
+		get {
+			return self.value.float
 		}
 	}
 	public var bool: Bool? {
