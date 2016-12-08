@@ -172,6 +172,38 @@ extension JSONValue {
 	}
 }
 
+// MARK: Static instances
+
+extension JSON {
+	/// A convenience accessor for a null JSON instance, as if it were
+	/// initialized from the `null` literal.
+	///
+	/// Alternatively, Swift's `nil` literal can be used to initialize a JSON
+	/// instance like so:
+	/// ```
+	/// let nullJson: JSON = nil
+	/// ```
+	public static let null = JSON(value: .Null)
+	/// A convenience accessor for a true JSON instance, as if it were
+	/// initialized from the `true` literal.
+	///
+	/// Alternatively, Swift's `true` literal can be used to initialize a JSON
+	/// instance like so:
+	/// ```
+	/// let trueJson: JSON = true
+	/// ```
+	public static let `true` = JSON(value: .Boolean(true))
+	/// A convenience accessor for a false JSON instance, as if it were
+	/// initialized from the `false` literal.
+	///
+	/// Alternatively, Swift's `false` literal can be used to initialize a JSON
+	/// instance like so:
+	/// ```
+	/// let falseJson: JSON = false
+	/// ```
+	public static let `false` = JSON(value: .Boolean(false))
+}
+
 // MARK: Properties
 
 extension JSON {
@@ -495,9 +527,8 @@ extension JSON: CustomStringConvertible {
 // MARK: ExpressibleBy*Literal
 
 extension JSON: ExpressibleByNilLiteral {
-	/// Initialize a JSON null value using Swift's nil.
 	public init(nilLiteral: ()) {
-		self.init(value: .Null)
+		self = .null
 	}
 }
 
@@ -505,7 +536,7 @@ extension JSON: ExpressibleByBooleanLiteral {
 	public typealias BooleanLiteralType = Bool
 	
 	public init(booleanLiteral value: JSON.BooleanLiteralType) {
-		self.init(value: .Boolean(value))
+		self = value ? .true : .false
 	}
 }
 
