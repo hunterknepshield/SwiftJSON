@@ -230,6 +230,61 @@ extension JSON {
 			}
 		}
 	}
+}
+
+// MARK: Type inspection
+
+extension JSON {
+	public var isString: Bool {
+		get {
+			switch self.value {
+			case .String(_):
+				return true
+			default:
+				return false
+			}
+		}
+	}
+	public var isNumber: Bool {
+		get {
+			switch self.value {
+			case .Number(_):
+				return true
+			default:
+				return false
+			}
+		}
+	}
+	public var isObject: Bool {
+		get {
+			switch self.value {
+			case .Object(_):
+				return true
+			default:
+				return false
+			}
+		}
+	}
+	public var isArray: Bool {
+		get {
+			switch self.value {
+			case .Array(_):
+				return true
+			default:
+				return false
+			}
+		}
+	}
+	public var isBool: Bool {
+		get {
+			switch self.value {
+			case .Boolean(_):
+				return true
+			default:
+				return false
+			}
+		}
+	}
 	public var isNull: Bool {
 		get {
 			switch self.value {
