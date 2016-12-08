@@ -599,10 +599,44 @@ extension JSON: ExpressibleByArrayLiteral {
 extension JSON: ExpressibleByDictionaryLiteral {
 	public typealias Key = String
 	// TODO: make this JSONEncodable once conditional conformances are available
-	public typealias Value = JSON
+	public typealias Value = JSONEncodable
 	
 	public init(dictionaryLiteral elements: (JSON.Key, JSON.Value)...) {
-		self.init(objectMembers: elements)
+		self.init(objectMembers: elements.map({ return ($0.0, $0.1.json) }))
+	}
+}
+
+// MARK: JSONEncodable
+
+// TODO: investigate removal once Array<JSONEncodable> can itself be constrained
+// to JSONEncodable.
+extension JSON: JSONEncodable {
+	/// **Only use this member for constructing JSON from literals. This will be
+	/// removed in a future version of Swift where conditional protocol
+	/// conformances are available.**
+	///
+	/// Currently, it is impossible for a generic type to be conditionally
+	/// extended to conform to a protocol, i.e. Array<JSONEncodable> cannot
+	/// itself be JSONEncodable. This requires a bit of awkwardness when using
+	/// JSON literals, like so:
+	/// ```
+	/// class Decodable: JSONDecodable {
+	///     let array: [Int]
+	///
+	///     public init?(json: JSON) { /* truncated */ }
+	/// }
+	///
+	/// let json: JSON = ["array": [1, 2, 3].json]
+	/// ```
+	/// When constructing the JSON from the literal, the array's `json` property
+	/// must be explicitly specified because Array\<Int\> cannot be
+	/// JSONEncodable, even though Int (its Element type) is JSONEncodable. This
+	/// is intended to be rectified in a future Swift version, but for now, this
+	/// must be.
+	public var json: JSON {
+		get {
+			return self
+		}
 	}
 }
 
