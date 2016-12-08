@@ -22,7 +22,7 @@ public protocol JSONDecodable {
 }
 
 extension JSONDecodable {
-	init?(rawJson: String) {
+	public init?(rawJson: String) {
 		guard let json = JSON(string: rawJson) else {
 			return nil
 		}
@@ -30,10 +30,18 @@ extension JSONDecodable {
 	}
 }
 
+// TODO: Conditional conformance when available
+// extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
+//     public init?(json: JSON) { /* ... */ }
+// }
+
+
+// TODO: Conditional conformance when available
+// extension Array: JSONDecodable where Element: JSONDecodable {
 extension Array where Element: JSONDecodable {
 	/// Attempts to construct an Array from a JSON array. Returns nil if any of
 	/// the elements of the JSON array fail to initialize an element object.
-	init?(jsonArray: [JSON]) {
+	public init?(jsonArray: [JSON]) {
 		self.init()
 		self.reserveCapacity(jsonArray.count)
 		for jsonElement in jsonArray {
@@ -46,7 +54,7 @@ extension Array where Element: JSONDecodable {
 	
 	/// Attempts to construct an Array from a JSON object. Returns nil if the
 	/// JSON is not an array or if `init?(jsonArray:)` fails.
-	init?(json: JSON) {
+	public init?(json: JSON) {
 		guard let array = json.array else {
 			return nil
 		}
@@ -56,7 +64,7 @@ extension Array where Element: JSONDecodable {
 	/// Attempts to construct an Array from a raw JSON array string. Returns nil
 	/// if a JSON object cannot be constructed from the supplied string or if
 	/// `init?(json:)` fails.
-	init?(rawJson: String) {
+	public init?(rawJson: String) {
 		guard let json = JSON(string: rawJson) else {
 			return nil
 		}

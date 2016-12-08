@@ -17,7 +17,7 @@ class Builder {
 		guard let value = buildValue() else {
 			return nil
 		}
-		return JSON(value)
+		return JSON(value: value)
 	}
 	
 	func buildValue() -> JSON.Value? {

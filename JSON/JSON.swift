@@ -19,7 +19,7 @@ public struct JSON {
 	var value: Value
 	
 	/// Used internally by Builder.
-	init(_ value: Value) {
+	init(value: Value) {
 		self.value = value
 	}
 }
@@ -158,7 +158,7 @@ extension JSON {
 				guard let value = members[key] else {
 					return nil
 				}
-				return JSON(value)
+				return JSON(value: value)
 			default:
 				return nil
 			}
@@ -170,7 +170,7 @@ extension JSON {
 		get {
 			switch self.value {
 			case .Array(let arr):
-				return arr.map({ return JSON($0) })
+				return arr.map({ return JSON(value: $0) })
 			default:
 				return nil
 			}
