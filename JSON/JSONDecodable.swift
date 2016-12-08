@@ -6,9 +6,9 @@
 //  Copyright © 2016 Hunter Knepshield. All rights reserved.
 //
 
-/// Conform to this protocol to get an initializer that constructs a conforming
-/// type from a JSON object. A convenience initializer allows a conforming type
-/// to be constructed directly from a raw JSON string.
+/// Conform to this protocol to define an initializer that initializes a
+/// conforming type from a JSON object. A default convenience initializer allows
+/// an instance to be initialized directly from a raw JSON string as well.
 public protocol JSONDecodable {
 	/// Initialize an instance from a JSON object. Returns nil if the object
 	/// could not be initialized from the specified JSON.

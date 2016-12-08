@@ -24,15 +24,33 @@ public struct JSON {
 	}
 }
 
-// MARK: Public constructor
+// MARK: Public initializers
 
 extension JSON {
+	/// Initializes a JSON instance from the specified string. The string may be
+	/// a JSON fragment (i.e. top-level value or literal), a JSON object, or a
+	/// JSON array.
 	public init?(string: String) {
 		let builder = Builder(json: string)
 		guard let json = builder.build() else {
 			return nil
 		}
 		self = json
+	}
+	
+	/// Initializes a JSON array with the specified elements.
+	public init(array: [JSON]) {
+		self.init(value: .Array(elements: array.map({ return $0.value })))
+	}
+
+	/// Initializes a JSON object with the specified members.
+	public init(objectMembers members: [String: JSON]) {
+		var rawMembers: [String: JSON.Value] = [:]
+		// TODO: apply decision about duplicate keys here as well.
+		for member in members {
+			rawMembers[member.key] = member.value.value
+		}
+		self.init(value: .Object(members: rawMembers))
 	}
 }
 

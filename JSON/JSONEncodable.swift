@@ -6,6 +6,8 @@
 //  Copyright © 2016 Hunter Knepshield. All rights reserved.
 //
 
+/// Conform to this protocol to define a `json` property on your type. This may
+/// be used to initialize JSON instances from user-defined types.
 public protocol JSONEncodable {
 	var json: JSON { get }
 }
@@ -108,7 +110,7 @@ extension Array where Element: JSONEncodable {
 	
 	public var json: JSON {
 		get {
-			return JSON(value: .Array(elements: self.jsonArray.map({ return $0.value })))
+			return JSON(array: self.jsonArray)
 		}
 	}
 }
