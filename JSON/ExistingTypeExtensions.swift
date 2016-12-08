@@ -101,9 +101,19 @@ extension UInt: JSONDecodable {
 }
 
 // TODO: When conditional conformance and same-type requirements are available
-// extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
-//     public init?(json: JSON) { /* ... */ }
-// }
+//extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
+//	public init?(json: JSON) {
+//		guard json.isObject else {
+//			return nil
+//		}
+//		for (key, jsonValue) in json {
+//			guard let value = Value(json: jsonValue) else {
+//				return nil
+//			}
+//			self[key] = value
+//		}
+//	}
+//}
 
 // TODO: Conditional conformance when available
 // extension Array: JSONDecodable where Element: JSONDecodable {
@@ -228,9 +238,14 @@ extension UInt: JSONEncodable {
 }
 
 // TODO: When conditional conformance and same-type requirements are available
-// extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
-//     public var json: JSON { get { /* ... */ } }
-// }
+//extension Dictionary: JSONEncodable where Key == String, Value: JSONEncodable {
+//	public var json: JSON {
+//		get {
+//			let members = self.map({ return ($0.key, $0.value.json) })
+//			return JSON(objectMembers: members)
+//		}
+//	}
+//}
 
 // TODO: Conditional conformance when available
 // extension Array: JSONEncodable where Element: JSONEncodable {
