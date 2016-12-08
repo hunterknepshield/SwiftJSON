@@ -589,10 +589,10 @@ extension JSON: ExpressibleByStringLiteral {
 
 extension JSON: ExpressibleByArrayLiteral {
 	// TODO: make this JSONEncodable once conditional conformances are available
-	public typealias Element = JSON
+	public typealias Element = JSONEncodable
 
 	public init(arrayLiteral elements: JSON.Element...) {
-		self.init(array: elements)
+		self.init(array: elements.map({ return $0.json }))
 	}
 }
 

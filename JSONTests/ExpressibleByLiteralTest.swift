@@ -42,7 +42,7 @@ class ExpressibleByLiteralTest: XCTestCase {
 	
 	func testExpressibleByArrayLiteral() {
 		// Types within the array can be heterogeneous
-		let arrayJson: JSON = [1, "2", 3.14, [4], nil]
+		let arrayJson: JSON = [1, "2", 3.14, [4].json, nil as JSON]
 		XCTAssertEqual(arrayJson.value, JSONValue.Array(elements: [.Number("1"), .String("2"), .Number("3.14"), .Array(elements: [.Number("4")]), .Null]))
 	}
 	
