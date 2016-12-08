@@ -20,6 +20,7 @@
 		5A0E54691DECF773003E2E42 /* CustomStringConvertibleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */; };
 		5A65996F1DF90340008B8AB9 /* JSONEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A65996E1DF90340008B8AB9 /* JSONEncodable.swift */; };
 		5A6599711DF9037B008B8AB9 /* JSONDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6599701DF9037B008B8AB9 /* JSONDecodable.swift */; };
+		5A6599731DF90EC8008B8AB9 /* JSONDecodableTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6599721DF90EC8008B8AB9 /* JSONDecodableTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomStringConvertibleTest.swift; sourceTree = "<group>"; };
 		5A65996E1DF90340008B8AB9 /* JSONEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONEncodable.swift; sourceTree = "<group>"; };
 		5A6599701DF9037B008B8AB9 /* JSONDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodable.swift; sourceTree = "<group>"; };
+		5A6599721DF90EC8008B8AB9 /* JSONDecodableTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodableTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,9 +111,10 @@
 			children = (
 				5A0E54431DECA619003E2E42 /* Info.plist */,
 				5A0E54621DECD513003E2E42 /* BuilderTest.swift */,
+				5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */,
+				5A6599721DF90EC8008B8AB9 /* JSONDecodableTest.swift */,
 				5A0E54531DECAF0D003E2E42 /* NumberParsingTest.swift */,
 				5A0E54641DECDD98003E2E42 /* TokenizerTest.swift */,
-				5A0E54681DECF773003E2E42 /* CustomStringConvertibleTest.swift */,
 			);
 			path = JSONTests;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A0E54541DECAF0D003E2E42 /* NumberParsingTest.swift in Sources */,
+				5A6599731DF90EC8008B8AB9 /* JSONDecodableTest.swift in Sources */,
 				5A0E54691DECF773003E2E42 /* CustomStringConvertibleTest.swift in Sources */,
 				5A0E54631DECD513003E2E42 /* BuilderTest.swift in Sources */,
 				5A0E54651DECDD98003E2E42 /* TokenizerTest.swift in Sources */,

@@ -12,6 +12,9 @@
 public protocol JSONDecodable {
 	/// Initialize an instance from a JSON object. Returns nil if the object
 	/// could not be initialized from the specified JSON.
+	///
+	/// Types that conform to JSONDecodable are not necessarily required to make
+	/// this initializer failable.
 	init?(json: JSON)
 	
 	/// Attempts to construct a JSON object from the supplied string and uses
