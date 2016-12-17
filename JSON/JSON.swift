@@ -84,103 +84,66 @@ extension JSONValue {
 	/// cast from a Double.
 	var double: Double? {
 		get {
-			switch self {
-			case .Number(let string):
-				return Double(string)
-			default:
+			guard case .Number(let string) = self else {
 				return nil
 			}
+			return Double(string)
 		}
 	}
 	var float: Float? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return Float(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return Float(double)
 		}
 	}
 	var int64: Int64? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return Int64(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return Int64(double)
 		}
 	}
 	var uint64: UInt64? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return UInt64(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return UInt64(double)
 		}
 	}
 	var int32: Int32? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return Int32(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return Int32(double)
 		}
 	}
 	var uint32: UInt32? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return UInt32(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return UInt32(double)
 		}
 	}
 	var int: Int? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return Int(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return Int(double)
 		}
 	}
 	var uint: UInt? {
 		get {
-			switch self {
-			case .Number(_):
-				guard let double = self.double else {
-					return nil
-				}
-				return UInt(double)
-			default:
+			guard let double = self.double else {
 				return nil
 			}
+			return UInt(double)
 		}
 	}
 }
