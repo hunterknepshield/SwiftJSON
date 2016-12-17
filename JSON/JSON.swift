@@ -19,6 +19,9 @@ enum JSONValue {
 
 /// A representation of JSON.
 public struct JSON {
+	// TODO: Find a nicer way to make this mutable. Currently, we'd need to
+	// overwrite self.value in an ugly manner inside a switch since the enum has
+	// parameters.
 	var value: JSONValue
 	
 	/// Used internally by JSONBuilder.
