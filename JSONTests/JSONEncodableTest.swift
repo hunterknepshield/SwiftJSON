@@ -29,6 +29,6 @@ class EncodableObject: JSONEncodable {
 
 class JSONEncodableTest: XCTestCase {
     func testJsonEncodable() {
-		XCTAssertEqual(EncodableObject().json.value, .Object(members: ["string": .String("abc"), "int": .Number("42"), "double": .Number("3.14")]))
+		XCTAssertEqual(EncodableObject().json, .Object(members: ["string": .String("abc"), "int": .Number("42"), "double": .Number("3.14")]))
     }
 }

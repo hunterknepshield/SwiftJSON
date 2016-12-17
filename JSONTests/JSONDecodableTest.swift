@@ -33,11 +33,11 @@ class DecodableObject: JSONDecodable {
 class JSONDecodableTest: XCTestCase {
     func testJSONDecodable() {
 		// Tests the user-defined init?(json:) initializer.
-		let json = JSON(value: .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")]))
+		let json: JSON = .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")])
 		let object = DecodableObject(json: json)
 		JSONDecodableTest.objectHelper(object)
 		
-		let badJson = JSON(value: .Object(members: ["bad": .String("value")]))
+		let badJson: JSON = .Object(members: ["bad": .String("value")])
 		let nilObject = DecodableObject(json: badJson)
 		XCTAssertNil(nilObject)
     }
@@ -54,24 +54,24 @@ class JSONDecodableTest: XCTestCase {
 	func testArrayJSONDecodable() {
 		func testInitWithJsonArray() {
 			// Array.init?(jsonArray:)
-			let jsonArray = [JSON](repeating: JSON(value: .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")])), count: 3)
+			let jsonArray = [JSON](repeating: .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")]), count: 3)
 			let array = [DecodableObject](jsonArray: jsonArray)
 			JSONDecodableTest.arrayHelper(array)
 			
-			let badJsonArray = [JSON](repeating: JSON(value: .Object(members: ["bad": .String("value")])), count: 3)
+			let badJsonArray = [JSON](repeating: .Object(members: ["bad": .String("value")]), count: 3)
 			let nilArray = [DecodableObject](jsonArray: badJsonArray)
 			XCTAssertNil(nilArray)
 		}
 		func testInitWithJson() {
 			// Array.init?(json:)
-			let json = JSON(value: .Array(elements:
+			let json: JSON = .Array(elements:
 				[.Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")]),
 				 .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")]),
-				 .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")])]))
+				 .Object(members: ["string": .String("abc"), "int": .Number("1"), "double": .Number("3.14")])])
 			let array = [DecodableObject](json: json)
 			JSONDecodableTest.arrayHelper(array)
 			
-			let badJson = JSON(value: .Array(elements: [.Object(members: ["bad": .String("value")])]))
+			let badJson: JSON = .Array(elements: [.Object(members: ["bad": .String("value")])])
 			let nilArray = [DecodableObject](json: badJson)
 			XCTAssertNil(nilArray)
 		}

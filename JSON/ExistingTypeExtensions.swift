@@ -168,7 +168,7 @@ extension Bool: JSONEncodable {
 extension String: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .String(self))
+			return .String(self)
 		}
 	}
 }
@@ -176,7 +176,7 @@ extension String: JSONEncodable {
 extension Double: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -184,7 +184,7 @@ extension Double: JSONEncodable {
 extension Float: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -192,7 +192,7 @@ extension Float: JSONEncodable {
 extension Int64: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -200,7 +200,7 @@ extension Int64: JSONEncodable {
 extension UInt64: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -208,7 +208,7 @@ extension UInt64: JSONEncodable {
 extension Int32: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -216,7 +216,7 @@ extension Int32: JSONEncodable {
 extension UInt32: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -224,7 +224,7 @@ extension UInt32: JSONEncodable {
 extension Int: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }
@@ -232,7 +232,7 @@ extension Int: JSONEncodable {
 extension UInt: JSONEncodable {
 	public var json: JSON {
 		get {
-			return JSON(value: .Number(self.description))
+			return .Number(self.description)
 		}
 	}
 }

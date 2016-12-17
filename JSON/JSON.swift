@@ -6,28 +6,14 @@
 //  Copyright © 2016 Hunter Knepshield. All rights reserved.
 //
 
-/// The actual backing enum that holds type information. Never exposed outside
-/// this module.
-enum JSONValue {
+/// A representation of JSON.
+public enum JSON {
 	case String(Swift.String)
 	case Number(Swift.String)
-	case Object(members: [Swift.String: JSONValue])
-	case Array(elements: [JSONValue])
+	case Object(members: [Swift.String: JSON])
+	case Array(elements: [JSON])
 	case Boolean(Bool)
 	case Null
-}
-
-/// A representation of JSON.
-public struct JSON {
-	// TODO: Find a nicer way to make this mutable. Currently, we'd need to
-	// overwrite self.value in an ugly manner inside a switch since the enum has
-	// parameters.
-	var value: JSONValue
-	
-	/// Used internally by JSONBuilder.
-	init(value: JSONValue) {
-		self.value = value
-	}
 }
 
 // MARK: Public initializers
@@ -47,8 +33,8 @@ extension JSON {
 	/// Initializes a JSON instance from the specified Data instance. Returns
 	/// nil if the data cannot be represented as a String or if the data
 	/// produces malformed JSON.
-	public init?(data: Data, encoding: String.Encoding = String.Encoding.utf8) {
-		guard let string = String(data: data, encoding: encoding) else {
+	public init?(data: Data, encoding: Swift.String.Encoding = .utf8) {
+		guard let string = Swift.String(data: data, encoding: encoding) else {
 			return nil
 		}
 		self.init(rawJson: string)
@@ -56,18 +42,18 @@ extension JSON {
 	
 	/// Initializes a JSON array with the specified elements.
 	public init(array: [JSON]) {
-		self.init(value: .Array(elements: array.map({ return $0.value })))
+		self = .Array(elements: array)
 	}
 	
 	/// Internal initializer used by init(objectMembers:) as well as
 	/// ExpressibleByDictionaryLiteral's initializer.
 	internal init(objectMembers members: [(String, JSON)]) {
-		var rawMembers: [String: JSONValue] = [:]
+		var rawMembers: [String: JSON] = [:]
 		// TODO: apply decision about duplicate keys here as well.
 		for (key, value) in members {
-			rawMembers[key] = value.value
+			rawMembers[key] = value
 		}
-		self.init(value: .Object(members: rawMembers))
+		self = .Object(members: rawMembers)
 	}
 
 	/// Initializes a JSON object with the specified members.
@@ -76,10 +62,104 @@ extension JSON {
 	}
 }
 
-// MARK: Integer conversion
-// Macros sure would be useful here...
+// MARK: Static instances
 
-extension JSONValue {
+extension JSON {
+	/// A convenience accessor for a null JSON instance, as if it were
+	/// initialized from the `null` literal.
+	///
+	/// Alternatively, Swift's `nil` literal can be used to initialize a JSON
+	/// instance like so:
+	/// ```
+	/// let nullJson: JSON = nil
+	/// ```
+	public static let null: JSON = .Null
+	/// A convenience accessor for a true JSON instance, as if it were
+	/// initialized from the `true` literal.
+	///
+	/// Alternatively, Swift's `true` literal can be used to initialize a JSON
+	/// instance like so:
+	/// ```
+	/// let trueJson: JSON = true
+	/// ```
+	public static let `true`: JSON = .Boolean(true)
+	/// A convenience accessor for a false JSON instance, as if it were
+	/// initialized from the `false` literal.
+	///
+	/// Alternatively, Swift's `false` literal can be used to initialize a JSON
+	/// instance like so:
+	/// ```
+	/// let falseJson: JSON = false
+	/// ```
+	public static let `false`: JSON = .Boolean(false)
+}
+
+// MARK: Properties
+
+extension JSON {
+	// TODO: should these subscripts be mutable?
+	/// Fetches a value from a JSON object with the supplied key. Returns nil if
+	/// the JSON isn't an object or if no such key exists in the object.
+	public subscript(_ key: String) -> JSON? {
+		get {
+			switch self {
+			case .Object(let members):
+				return members[key]
+			default:
+				return nil
+			}
+		}
+	}
+	/// Fetches a value from a JSON array with the specified index. Returns nil
+	/// if the JSON isn't an array. May cause a runtime error if the index is
+	/// out of bounds.
+	public subscript(_ index: Int) -> JSON? {
+		get {
+			switch self {
+			case .Array(let elements):
+				return elements[index]
+			default:
+				return nil
+			}
+		}
+	}
+	
+	/// Returns the underlying JSON array. Returns nil if the JSON isn't an
+	/// array.
+	public var array: [JSON]? {
+		get {
+			switch self {
+			case .Array(let arr):
+				return arr
+			default:
+				return nil
+			}
+		}
+	}
+	/// Returns the underlying JSON string. Returns nil if the JSON isn't a
+	/// string.
+	public var string: String? {
+		get {
+			switch self {
+			case .String(let str):
+				return str
+			default:
+				return nil
+			}
+		}
+	}
+	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
+	/// literal.
+	public var bool: Bool? {
+		get {
+			switch self {
+			case .Boolean(let bool):
+				return bool
+			default:
+				return nil
+			}
+		}
+	}
 	/// The actual root conversion. Everything else is implemented as a type
 	/// cast from a Double.
 	var double: Double? {
@@ -146,186 +226,14 @@ extension JSONValue {
 			return UInt(double)
 		}
 	}
-}
 
-// MARK: Static instances
-
-extension JSON {
-	/// A convenience accessor for a null JSON instance, as if it were
-	/// initialized from the `null` literal.
-	///
-	/// Alternatively, Swift's `nil` literal can be used to initialize a JSON
-	/// instance like so:
-	/// ```
-	/// let nullJson: JSON = nil
-	/// ```
-	public static let null = JSON(value: .Null)
-	/// A convenience accessor for a true JSON instance, as if it were
-	/// initialized from the `true` literal.
-	///
-	/// Alternatively, Swift's `true` literal can be used to initialize a JSON
-	/// instance like so:
-	/// ```
-	/// let trueJson: JSON = true
-	/// ```
-	public static let `true` = JSON(value: .Boolean(true))
-	/// A convenience accessor for a false JSON instance, as if it were
-	/// initialized from the `false` literal.
-	///
-	/// Alternatively, Swift's `false` literal can be used to initialize a JSON
-	/// instance like so:
-	/// ```
-	/// let falseJson: JSON = false
-	/// ```
-	public static let `false` = JSON(value: .Boolean(false))
-}
-
-// MARK: Properties
-
-extension JSON {
-	// TODO: should these subscripts be mutable?
-	/// Fetches a value from a JSON object with the supplied key. Returns nil if
-	/// the JSON isn't an object or if no such key exists in the object.
-	public subscript(_ key: String) -> JSON? {
-		get {
-			switch self.value {
-			case .Object(let members):
-				guard let value = members[key] else {
-					return nil
-				}
-				return JSON(value: value)
-			default:
-				return nil
-			}
-		}
-	}
-	/// Fetches a value from a JSON array with the specified index. Returns nil
-	/// if the JSON isn't an array. May cause a runtime error if the index is
-	/// out of bounds.
-	public subscript(_ index: Int) -> JSON? {
-		get {
-			switch self.value {
-			case .Array(let elements):
-				return JSON(value: elements[index])
-			default:
-				return nil
-			}
-		}
-	}
-	/// Returns the underlying JSON array. Returns nil if the JSON isn't an
-	/// array.
-	public var array: [JSON]? {
-		get {
-			switch self.value {
-			case .Array(let arr):
-				return arr.map({ return JSON(value: $0) })
-			default:
-				return nil
-			}
-		}
-	}
-	/// Returns the underlying JSON string. Returns nil if the JSON isn't a
-	/// string.
-	public var string: String? {
-		get {
-			switch self.value {
-			case .String(let str):
-				return str
-			default:
-				return nil
-			}
-		}
-	}
-	/// Returns the underlying numeric value as a Double. Returns nil if the
-	/// JSON isn't a number or the number can't be represented using a Double.
-	public var double: Double? {
-		get {
-			return self.value.double
-		}
-	}
-	/// Returns the underlying numeric value as a Float. Returns nil if the JSON
-	/// isn't a number or the number can't be represented using a Float. May
-	/// cause a runtime error if the value cannot be converted to a Float from a
-	/// Double.
-	public var float: Float? {
-		get {
-			return self.value.float
-		}
-	}
-	/// Returns the underlying numeric value as an Int64. Returns nil if the
-	/// JSON isn't a number or the number can't be represented using an Int64.
-	/// May cause a runtime error if the value cannot be converted to an Int64
-	/// from a Double.
-	public var int64: Int64? {
-		get {
-			return self.value.int64
-		}
-	}
-	/// Returns the underlying numeric value as a UInt64. Returns nil if the
-	/// JSON isn't a number or the number can't be represented using a UInt64.
-	/// May cause a runtime error if the value cannot be converted to a UInt64
-	/// from a Double.
-	public var uint64: UInt64? {
-		get {
-			return self.value.uint64
-		}
-	}
-	/// Returns the underlying numeric value as an Int32. Returns nil if the
-	/// JSON isn't a number or the number can't be represented using an Int32.
-	/// May cause a runtime error if the value cannot be converted to an Int32
-	/// from a Double.
-	public var int32: Int32? {
-		get {
-			return self.value.int32
-		}
-	}
-	/// Returns the underlying numeric value as a UInt32. Returns nil if the
-	/// JSON isn't a number or the number can't be represented using a UInt32.
-	/// May cause a runtime error if the value cannot be converted to a UInt32
-	/// from a Double.
-	public var uint32: UInt32? {
-		get {
-			return self.value.uint32
-		}
-	}
-	/// Returns the underlying numeric value as an Int. Returns nil if the JSON
-	/// isn't a number or the number can't be represented using an Int. May
-	/// cause a runtime error if the value cannot be converted to an Int from a
-	/// Double.
-	public var int: Int? {
-		get {
-			return self.value.int
-		}
-	}
-	/// Returns the underlying numeric value as a UInt. Returns nil if the JSON
-	/// isn't a number or the number can't be represented using a UInt. May
-	/// cause a runtime error if the value cannot be converted to a UInt from a
-	/// Double.
-	public var uint: UInt? {
-		get {
-			return self.value.uint
-		}
-	}
-	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
-	/// literal.
-	public var bool: Bool? {
-		get {
-			switch self.value {
-			case .Boolean(let bool):
-				return bool
-			default:
-				return nil
-			}
-		}
-	}
-	
 	// TODO: Decide whether -1 is ok or if nil should be returned.
 	/// Returns the count of the number of members if this is a JSON object, the
 	/// count of the number of elements if this is a JSON array, or -1,
 	/// indicating this type doesn't have a count.
 	public var count: Int {
 		get {
-			switch self.value {
+			switch self {
 			case .Object(let members):
 				return members.count
 			case .Array(let elements):
@@ -343,7 +251,7 @@ extension JSON {
 	/// Returns whether or not this JSON is a string.
 	public var isString: Bool {
 		get {
-			switch self.value {
+			switch self {
 			case .String(_):
 				return true
 			default:
@@ -354,7 +262,7 @@ extension JSON {
 	/// Returns whether or not this JSON is a number.
 	public var isNumber: Bool {
 		get {
-			switch self.value {
+			switch self {
 			case .Number(_):
 				return true
 			default:
@@ -365,7 +273,7 @@ extension JSON {
 	/// Returns whether or not this JSON is an object.
 	public var isObject: Bool {
 		get {
-			switch self.value {
+			switch self {
 			case .Object(_):
 				return true
 			default:
@@ -376,7 +284,7 @@ extension JSON {
 	/// Returns whether or not this JSON is an array.
 	public var isArray: Bool {
 		get {
-			switch self.value {
+			switch self {
 			case .Array(_):
 				return true
 			default:
@@ -388,7 +296,7 @@ extension JSON {
 	/// `false` literals).
 	public var isBool: Bool {
 		get {
-			switch self.value {
+			switch self {
 			case .Boolean(_):
 				return true
 			default:
@@ -401,7 +309,7 @@ extension JSON {
 	/// different meaning.
 	public var isNull: Bool {
 		get {
-			switch self.value {
+			switch self {
 			case .Null:
 				return true
 			default:
@@ -413,9 +321,9 @@ extension JSON {
 
 // MARK: Equatable
 
-extension JSONValue: Equatable {
+extension JSON: Equatable {
 	/// Complexity: O(n).
-	static func ==(lhs: JSONValue, rhs: JSONValue) -> Bool {
+	public static func ==(lhs: JSON, rhs: JSON) -> Bool {
 		switch (lhs, rhs) {
 		case (.Null, .Null):
 			return true
@@ -449,17 +357,10 @@ extension JSONValue: Equatable {
 	}
 }
 
-extension JSON: Equatable {
-	/// Complexity: O(n).
-	public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-		return lhs.value == rhs.value
-	}
-}
-
 // MARK: CustomStringConvertible
 
-extension JSONValue: CustomStringConvertible {
-	/// The string used for indentation levels in JSONValue.description(_).
+extension JSON: CustomStringConvertible {
+	/// The string used for indentation levels in JSON.description(_).
 	private static let indentLevel = "    "
 	
 	/// Returns a pretty-printed version of this value.
@@ -474,7 +375,7 @@ extension JSONValue: CustomStringConvertible {
 			var str = "{"
 			if members.count > 0 {
 				// All pairs are indented another level beyond the brackets.
-				let memberIndent = objectIndent + JSONValue.indentLevel
+				let memberIndent = objectIndent + JSON.indentLevel
 				// Every member pair except the last needs to be separated by a
 				// comma and newline. The last one just needs the newline.
 				let strings = members.map({ "\n\(memberIndent)\"\($0.key)\": \($0.value.description(memberIndent))," })
@@ -513,20 +414,12 @@ extension JSONValue: CustomStringConvertible {
 		return result
 	}
 	
-	var description: String {
+	public var description: String {
 		get {
 			return self.description()
 		}
 	}
-}
 
-extension JSON: CustomStringConvertible {
-	public var description: String {
-		get {
-			return self.value.description
-		}
-	}
-	
 	// TODO public var minifiedDescription: String { get }
 }
 
@@ -546,11 +439,11 @@ extension JSON: Sequence {
 		private var index: Int = 0
 		
 		init(json: JSON) {
-			switch json.value {
+			switch json {
 			case .Array(let elements):
-				self.type = .Array(elements: elements.map({ return JSON(value: $0) }))
+				self.type = .Array(elements: elements)
 			case .Object(let members):
-				self.type = .Object(members: members.map({ return ($0.0, JSON(value: $0.1)) }))
+				self.type = .Object(members: members.map({ return ($0.0, $0.1) }))
 			default:
 				self.type = .NotIterable
 			}
@@ -595,19 +488,19 @@ extension JSON: ExpressibleByNilLiteral {
 
 extension JSON: ExpressibleByBooleanLiteral {
 	public init(booleanLiteral value: BooleanLiteralType) {
-		self = value ? .true : .false
+		self = value ? JSON.true : JSON.false
 	}
 }
 
 extension JSON: ExpressibleByFloatLiteral {
 	public init(floatLiteral value: FloatLiteralType) {
-		self.init(value: .Number(value.description))
+		self = .Number(value.description)
 	}
 }
 
 extension JSON: ExpressibleByIntegerLiteral {
 	public init(integerLiteral value: IntegerLiteralType) {
-		self.init(value: .Number(value.description))
+		self = .Number(value.description)
 	}
 }
 
@@ -616,15 +509,15 @@ extension JSON: ExpressibleByIntegerLiteral {
 /// string, see `JSON.init(string:)`.
 extension JSON: ExpressibleByStringLiteral {
 	public init(unicodeScalarLiteral value: StringLiteralType) {
-		self.init(value: .String(value))
+		self = .String(value)
 	}
 
 	public init(extendedGraphemeClusterLiteral value: StringLiteralType) {
-		self.init(value: .String(value))
+		self = .String(value)
 	}
 
 	public init(stringLiteral value: StringLiteralType) {
-		self.init(value: .String(value))
+		self = .String(value)
 	}
 }
 
@@ -634,7 +527,7 @@ extension JSON: ExpressibleByArrayLiteral {
 	}
 }
 
-extension JSON: ExpressibleByDictionaryLiteral {	
+extension JSON: ExpressibleByDictionaryLiteral {
 	public init(dictionaryLiteral elements: (String, JSONEncodable)...) {
 		self.init(objectMembers: elements.map({ return ($0.0, $0.1.json) }))
 	}
