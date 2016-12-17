@@ -119,7 +119,7 @@ class JSONTokenizer {
 				hasPriorSeparator = false
 				return .String(string)
 			case "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":  // Literal number.
-				guard hasPriorSeparator, let result = parseNumber(startsWith: c) else {
+				guard hasPriorSeparator, let result = parseNumber(startingWith: c) else {
 					return nil
 				}
 				previouslyUnconsumed = result.nextCharacter
@@ -207,7 +207,7 @@ class JSONTokenizer {
 	/// Consumes and returns a well-formed string representation of a JSON
 	/// number or nil if it was an invalid number. This function consumes one
 	/// too many characters, so it returns one if appropriate.
-	private func parseNumber(startsWith beginning: Character) -> (number: String, nextCharacter: Character?)? {
+	private func parseNumber(startingWith beginning: Character) -> (number: String, nextCharacter: Character?)? {
 		var result = String(beginning)
 		while let c = iterator.next() {
 			switch c {
