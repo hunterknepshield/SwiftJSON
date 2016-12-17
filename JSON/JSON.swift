@@ -33,7 +33,7 @@ extension JSON {
 	/// Initializes a JSON instance from the specified Data instance. Returns
 	/// nil if the data cannot be represented as a String or if the data
 	/// produces malformed JSON.
-	public init?(data: Data, encoding: Swift.String.Encoding = .utf8) {
+	public init?(data: Data, encoding: String.Encoding = .utf8) {
 		guard let string = Swift.String(data: data, encoding: encoding) else {
 			return nil
 		}
@@ -92,157 +92,6 @@ extension JSON {
 	/// let falseJson: JSON = false
 	/// ```
 	public static let `false`: JSON = .Boolean(false)
-}
-
-// MARK: Properties
-
-extension JSON {
-	// TODO: should these subscripts be mutable?
-	/// Fetches a value from a JSON object with the supplied key. Returns nil if
-	/// the JSON isn't an object or if no such key exists in the object.
-	public subscript(_ key: String) -> JSON? {
-		get {
-			switch self {
-			case .Object(let members):
-				return members[key]
-			default:
-				return nil
-			}
-		}
-	}
-	/// Fetches a value from a JSON array with the specified index. Returns nil
-	/// if the JSON isn't an array. May cause a runtime error if the index is
-	/// out of bounds.
-	public subscript(_ index: Int) -> JSON? {
-		get {
-			switch self {
-			case .Array(let elements):
-				return elements[index]
-			default:
-				return nil
-			}
-		}
-	}
-	
-	/// Returns the underlying JSON array. Returns nil if the JSON isn't an
-	/// array.
-	public var array: [JSON]? {
-		get {
-			switch self {
-			case .Array(let arr):
-				return arr
-			default:
-				return nil
-			}
-		}
-	}
-	/// Returns the underlying JSON string. Returns nil if the JSON isn't a
-	/// string.
-	public var string: String? {
-		get {
-			switch self {
-			case .String(let str):
-				return str
-			default:
-				return nil
-			}
-		}
-	}
-	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
-	/// literal.
-	public var bool: Bool? {
-		get {
-			switch self {
-			case .Boolean(let bool):
-				return bool
-			default:
-				return nil
-			}
-		}
-	}
-	/// The actual root conversion. Everything else is implemented as a type
-	/// cast from a Double.
-	var double: Double? {
-		get {
-			guard case .Number(let string) = self else {
-				return nil
-			}
-			return Double(string)
-		}
-	}
-	var float: Float? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return Float(double)
-		}
-	}
-	var int64: Int64? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return Int64(double)
-		}
-	}
-	var uint64: UInt64? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return UInt64(double)
-		}
-	}
-	var int32: Int32? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return Int32(double)
-		}
-	}
-	var uint32: UInt32? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return UInt32(double)
-		}
-	}
-	var int: Int? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return Int(double)
-		}
-	}
-	var uint: UInt? {
-		get {
-			guard let double = self.double else {
-				return nil
-			}
-			return UInt(double)
-		}
-	}
-
-	// TODO: Decide whether -1 is ok or if nil should be returned.
-	/// Returns the count of the number of members if this is a JSON object, the
-	/// count of the number of elements if this is a JSON array, or -1,
-	/// indicating this type doesn't have a count.
-	public var count: Int {
-		get {
-			switch self {
-			case .Object(let members):
-				return members.count
-			case .Array(let elements):
-				return elements.count
-			default:
-				return -1
-			}
-		}
-	}
 }
 
 // MARK: Type inspection
@@ -314,6 +163,195 @@ extension JSON {
 				return true
 			default:
 				return false
+			}
+		}
+	}
+}
+
+// MARK: Subscripts
+
+extension JSON {
+	// TODO: should these subscripts be mutable?
+	/// Fetches a value from a JSON object with the supplied key. Returns nil if
+	/// the JSON isn't an object or if no such key exists in the object.
+	public subscript(_ key: String) -> JSON? {
+		get {
+			switch self {
+			case .Object(let members):
+				return members[key]
+			default:
+				return nil
+			}
+		}
+	}
+	/// Fetches a value from a JSON array with the specified index. Returns nil
+	/// if the JSON isn't an array. May cause a runtime error if the index is
+	/// out of bounds.
+	public subscript(_ index: Int) -> JSON? {
+		get {
+			switch self {
+			case .Array(let elements):
+				return elements[index]
+			default:
+				return nil
+			}
+		}
+	}
+}
+
+// MARK: Properties
+
+extension JSON {
+	/// Returns the underlying JSON string. Returns nil if the JSON isn't a
+	/// string.
+	public var string: String? {
+		get {
+			switch self {
+			case .String(let str):
+				return str
+			default:
+				return nil
+			}
+		}
+	}
+	/// Returns the underlying double. Returns nil if the JSON isn't a numeric
+	/// value. This is the actual root conversion from string to number.
+	/// Everything else is implemented as a type cast from a Double.
+	public var double: Double? {
+		get {
+			guard case .Number(let string) = self else {
+				return nil
+			}
+			return Double(string)
+		}
+	}
+	/// Returns the underlying float. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var float: Float? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return Float(double)
+		}
+	}
+	/// Returns the underlying int64. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var int64: Int64? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return Int64(double)
+		}
+	}
+	/// Returns the underlying uint64. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var uint64: UInt64? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return UInt64(double)
+		}
+	}
+	/// Returns the underlying int32. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var int32: Int32? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return Int32(double)
+		}
+	}
+	/// Returns the underlying uint32. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var uint32: UInt32? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return UInt32(double)
+		}
+	}
+	/// Returns the underlying int. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var int: Int? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return Int(double)
+		}
+	}
+	/// Returns the underlying uint. Returns nil if the JSON isn't a numeric
+	/// value. May cause a runtime error if the value is too large for this type
+	/// of number.
+	public var uint: UInt? {
+		get {
+			guard let double = self.double else {
+				return nil
+			}
+			return UInt(double)
+		}
+	}
+	/// Returns the underlying JSON object. Returns nil if the JSON isn't an
+	/// object.
+	public var object: [String: JSON]? {
+		get {
+			switch self {
+			case .Object(let members):
+				return members
+			default:
+				return nil
+			}
+		}
+	}
+	/// Returns the underlying JSON array. Returns nil if the JSON isn't an
+	/// array.
+	public var array: [JSON]? {
+		get {
+			switch self {
+			case .Array(let arr):
+				return arr
+			default:
+				return nil
+			}
+		}
+	}
+	/// Returns the underlying bool. Returns nil if the JSON isn't a boolean
+	/// literal.
+	public var bool: Bool? {
+		get {
+			switch self {
+			case .Boolean(let bool):
+				return bool
+			default:
+				return nil
+			}
+		}
+	}
+
+	// TODO: Decide whether -1 is ok or if nil should be returned.
+	/// Returns the count of the number of members if this is a JSON object, the
+	/// count of the number of elements if this is a JSON array, or -1,
+	/// indicating this type doesn't have a count.
+	public var count: Int {
+		get {
+			switch self {
+			case .Object(let members):
+				return members.count
+			case .Array(let elements):
+				return elements.count
+			default:
+				return -1
 			}
 		}
 	}
@@ -533,33 +571,19 @@ extension JSON: ExpressibleByDictionaryLiteral {
 	}
 }
 
+// MARK: JSONDecodable
+
+extension JSON: JSONDecodable {
+	/// Just copy another JSON instance.
+	public init(json: JSON) {
+		self = json
+	}
+}
+
 // MARK: JSONEncodable
 
-// TODO: investigate removal once Array<JSONEncodable> can itself be constrained
-// to JSONEncodable.
 extension JSON: JSONEncodable {
-	/// **Only use this member for constructing JSON from literals. This will be
-	/// removed in a future version of Swift where conditional protocol
-	/// conformances are available.**
-	///
-	/// Currently, it is impossible for a generic type to be conditionally
-	/// extended to conform to a protocol, i.e. Array<JSONEncodable> cannot
-	/// itself be JSONEncodable. This requires a bit of awkwardness when using
-	/// JSON literals, like so:
-	/// ```
-	/// class Decodable: JSONDecodable {
-	///     let array: [Int]
-	///
-	///     public init?(json: JSON) { /* truncated */ }
-	/// }
-	///
-	/// let json: JSON = ["array": [1, 2, 3].json]
-	/// ```
-	/// When constructing the JSON from the literal, the array's `json` property
-	/// must be explicitly specified because Array\<Int\> cannot be
-	/// JSONEncodable, even though Int (its Element type) is JSONEncodable. This
-	/// is intended to be rectified in a future Swift version, but for now, this
-	/// must be.
+	/// A JSON instance is its own JSON representation.
 	public var json: JSON {
 		get {
 			return self
