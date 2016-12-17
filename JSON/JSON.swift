@@ -594,25 +594,19 @@ extension JSON: ExpressibleByNilLiteral {
 }
 
 extension JSON: ExpressibleByBooleanLiteral {
-	public typealias BooleanLiteralType = Bool
-	
-	public init(booleanLiteral value: JSON.BooleanLiteralType) {
+	public init(booleanLiteral value: BooleanLiteralType) {
 		self = value ? .true : .false
 	}
 }
 
 extension JSON: ExpressibleByFloatLiteral {
-	public typealias FloatLiteralType = Double
-	
-	public init(floatLiteral value: JSON.FloatLiteralType) {
+	public init(floatLiteral value: FloatLiteralType) {
 		self.init(value: .Number(value.description))
 	}
 }
 
 extension JSON: ExpressibleByIntegerLiteral {
-	public typealias IntegerLiteralType = IntMax
-	
-	public init(integerLiteral value: JSON.IntegerLiteralType) {
+	public init(integerLiteral value: IntegerLiteralType) {
 		self.init(value: .Number(value.description))
 	}
 }
@@ -621,38 +615,27 @@ extension JSON: ExpressibleByIntegerLiteral {
 /// other JSON type. To initialize a JSON object, array, or other value from a
 /// string, see `JSON.init(string:)`.
 extension JSON: ExpressibleByStringLiteral {
-	public typealias UnicodeScalarLiteralType = StringLiteralType
-	public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
-	public typealias StringLiteralType = String
-	
-	public init(unicodeScalarLiteral value: JSON.UnicodeScalarLiteralType) {
+	public init(unicodeScalarLiteral value: StringLiteralType) {
 		self.init(value: .String(value))
 	}
 
-	public init(extendedGraphemeClusterLiteral value: JSON.ExtendedGraphemeClusterLiteralType) {
+	public init(extendedGraphemeClusterLiteral value: StringLiteralType) {
 		self.init(value: .String(value))
 	}
 
-	public init(stringLiteral value: JSON.StringLiteralType) {
+	public init(stringLiteral value: StringLiteralType) {
 		self.init(value: .String(value))
 	}
 }
 
 extension JSON: ExpressibleByArrayLiteral {
-	// TODO: make this JSONEncodable once conditional conformances are available
-	public typealias Element = JSONEncodable
-
-	public init(arrayLiteral elements: JSON.Element...) {
+	public init(arrayLiteral elements: JSONEncodable...) {
 		self.init(array: elements.map({ return $0.json }))
 	}
 }
 
-extension JSON: ExpressibleByDictionaryLiteral {
-	public typealias Key = String
-	// TODO: make this JSONEncodable once conditional conformances are available
-	public typealias Value = JSONEncodable
-	
-	public init(dictionaryLiteral elements: (JSON.Key, JSON.Value)...) {
+extension JSON: ExpressibleByDictionaryLiteral {	
+	public init(dictionaryLiteral elements: (String, JSONEncodable)...) {
 		self.init(objectMembers: elements.map({ return ($0.0, $0.1.json) }))
 	}
 }
