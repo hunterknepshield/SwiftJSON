@@ -23,6 +23,7 @@
 		5A6708B71DF9D981004AF9C0 /* ExistingTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A6708B61DF9D981004AF9C0 /* ExistingTypeExtensions.swift */; };
 		5A73A33A1DF9E27000F6B3A0 /* JSONEncodableTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A73A3391DF9E27000F6B3A0 /* JSONEncodableTest.swift */; };
 		5A73A33C1DFA049200F6B3A0 /* SequenceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A73A33B1DFA049200F6B3A0 /* SequenceTest.swift */; };
+		5AE16D611E051E5B006C08F5 /* RepresentationConversionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AE16D601E051E5B006C08F5 /* RepresentationConversionTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		5A6708B61DF9D981004AF9C0 /* ExistingTypeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ExistingTypeExtensions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5A73A3391DF9E27000F6B3A0 /* JSONEncodableTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONEncodableTest.swift; sourceTree = "<group>"; };
 		5A73A33B1DFA049200F6B3A0 /* SequenceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SequenceTest.swift; sourceTree = "<group>"; };
+		5AE16D601E051E5B006C08F5 /* RepresentationConversionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepresentationConversionTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 				5A0E54531DECAF0D003E2E42 /* NumberParsingTest.swift */,
 				5A73A33B1DFA049200F6B3A0 /* SequenceTest.swift */,
 				5A0E54641DECDD98003E2E42 /* TokenizerTest.swift */,
+				5AE16D601E051E5B006C08F5 /* RepresentationConversionTest.swift */,
 			);
 			path = JSONTests;
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 				5A0E54691DECF773003E2E42 /* CustomStringConvertibleTest.swift in Sources */,
 				5A0E54631DECD513003E2E42 /* BuilderTest.swift in Sources */,
 				5A73A33C1DFA049200F6B3A0 /* SequenceTest.swift in Sources */,
+				5AE16D611E051E5B006C08F5 /* RepresentationConversionTest.swift in Sources */,
 				5A0E54651DECDD98003E2E42 /* TokenizerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
