@@ -395,14 +395,16 @@ extension JSON: Equatable {
 	}
 }
 
-// MARK: CustomStringConvertible
+// MARK: String and Data conversions
 
-extension JSON: CustomStringConvertible {
-	/// The string used for indentation levels in JSON.description(_).
-	private static let indentLevel = "    "
+extension JSON {
+	/// The number of spaces used for indentation levels in a JSON object's
+	/// representation from JSON.prettyPrinted(objectPadding:).
+	static let objectMemberIndentSpaceCount = 2
 	
-	/// Returns a pretty-printed version of this value.
-	func description(_ objectIndent: String = "") -> String {
+	/// Returns a pretty-printed version of this JSON value. Ideal for
+	/// human-readable usage.
+	func prettyPrinted(objectPadding: Int = 0) -> String {
 		let result: String
 		switch self {
 		case .String(let str):
@@ -412,19 +414,13 @@ extension JSON: CustomStringConvertible {
 		case .Object(let members):
 			var str = "{"
 			if members.count > 0 {
+				str.append("\n")
 				// All pairs are indented another level beyond the brackets.
-				let memberIndent = objectIndent + JSON.indentLevel
-				// Every member pair except the last needs to be separated by a
-				// comma and newline. The last one just needs the newline.
-				let strings = members.map({ "\n\(memberIndent)\"\($0.key)\": \($0.value.description(memberIndent))," })
-				for string in strings.dropLast() {
-					str.append(string)
-				}
-				// Need don't want a comma after the final pair.
-				str.append(Swift.String(strings.last!.characters.dropLast()))
-				// Put the closing bracket on its own line when we have at least
+				let memberIndent = Swift.String(repeating: " ", count: objectPadding + JSON.objectMemberIndentSpaceCount)
+				str.append(members.map({ "\(memberIndent)\"\($0.key)\": \($0.value.prettyPrinted(objectPadding: objectPadding + JSON.objectMemberIndentSpaceCount))" }).joined(separator: ",\n"))
+				// Put the closing bracket on a new line when we have at least
 				// one member. Also include proper indentation.
-				str.append("\n\(objectIndent)")
+				str.append("\n\(Swift.String(repeating: " ", count: objectPadding))")
 			}
 			// If it's an empty object, we want it all on one line with no
 			// whitespace between the opening and closing brackets.
@@ -432,16 +428,7 @@ extension JSON: CustomStringConvertible {
 			result = str
 		case .Array(let elements):
 			var str = "["
-			let strings = elements.map({ return $0.description(objectIndent) })
-			var first = true
-			for string in strings {
-				if first {
-					first = false
-				} else {
-					str.append(", ")
-				}
-				str.append(string)
-			}
+			str.append(elements.map({ $0.prettyPrinted(objectPadding: objectPadding) }).joined(separator: ", "))
 			str.append("]")
 			result = str
 		case .Boolean(let b):
@@ -451,14 +438,62 @@ extension JSON: CustomStringConvertible {
 		}
 		return result
 	}
-	
-	public var description: String {
+
+	/// Returns a pretty-printed version of this JSON value. Ideal for
+	/// human-readable usage.
+	public var asPrettyString: String {
 		get {
-			return self.description()
+			return self.prettyPrinted()
 		}
 	}
+	
+	/// Returns a compact-printed version of this JSON value. Ideal for
+	/// size-sensitive usage.
+	public var asMinifiedString: String {
+		get {
+			let result: String
+			switch self {
+			case .String(let str):
+				result = "\"\(str)\""
+			case .Number(let str):
+				result = str
+			case .Object(let members):
+				var str = "{"
+				str.append(members.map({ "\"\($0.key)\":\($0.value.asMinifiedString)" }).joined(separator: ","))
+				str.append("}")
+				result = str
+			case .Array(let elements):
+				var str = "["
+				str.append(elements.map({ $0.asMinifiedString }).joined(separator: ","))
+				str.append("]")
+				result = str
+			case .Boolean(let b):
+				result = b ? "true" : "false"
+			case .Null:
+				result = "null"
+			}
+			return result
+		}
+	}
+	
+	/// Returns a Data instance representing this JSON instance. Uses
+	/// `self.asMinifiedString`'s UTF-8 encoded data. Ideal for sending over a
+	/// network.
+	public var asData: Data {
+		get {
+			return self.asMinifiedString.data(using: .utf8)!
+		}
+	}
+}
 
-	// TODO public var minifiedDescription: String { get }
+// MARK: CustomStringConvertible
+
+extension JSON: CustomStringConvertible {
+	public var description: String {
+		get {
+			return self.asPrettyString
+		}
+	}
 }
 
 // MARK: Sequence
