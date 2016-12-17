@@ -13,11 +13,7 @@ class JSONBuilder {
 		tokenizer = JSONTokenizer(json: json)
 	}
 	
-	func build() -> JSON? {
-		return buildValue()
-	}
-	
-	func buildValue(startingWith initial: JSONToken? = nil) -> JSON? {
+	func build(startingWith initial: JSONToken? = nil) -> JSON? {
 		guard let token = initial ?? tokenizer.next() else {
 			// We don't have any tokens to consume. This is an error.
 			return nil
@@ -86,7 +82,7 @@ class JSONBuilder {
 					return nil
 				}
 			case .NeedValue(let key):
-				guard let value = buildValue(startingWith: token) else {
+				guard let value = build(startingWith: token) else {
 					return nil
 				}
 				// TODO: decide on key collisions - overwrite or return nil?
@@ -135,7 +131,7 @@ class JSONBuilder {
 				}
 				fallthrough
 			case .NeedValue:
-				guard let value = buildValue(startingWith: token) else {
+				guard let value = build(startingWith: token) else {
 					return nil
 				}
 				elements.append(value)
